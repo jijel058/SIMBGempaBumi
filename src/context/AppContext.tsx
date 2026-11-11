@@ -58,7 +58,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<'id' | 'en'>('id');
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>('light');
   const [isSoundMuted, setIsSoundMuted] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<NavigationTab>('home');
   const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);

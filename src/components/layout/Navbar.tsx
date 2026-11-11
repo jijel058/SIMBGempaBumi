@@ -197,6 +197,19 @@ export const Navbar: React.FC = () => {
               {language === 'id' ? 'EN' : 'ID'}
             </button>
 
+            {/* Direct App Launch Pill (SVG Mockup: Buka aplikasi ↗) */}
+            <button
+              onClick={() => {
+                audio.playClick();
+                setActiveTab('monitoring');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="hidden sm:inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-sm transition transform hover:-translate-y-0.5 ml-1"
+            >
+              <span>Buka aplikasi</span>
+              <span>↗</span>
+            </button>
+
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

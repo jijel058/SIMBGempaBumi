@@ -1,35 +1,47 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { DaylightCityRupture3D, SimulationStage } from '../simulation3d/DaylightCityRupture3D';
 import { EarthGlobe3D } from '../simulation3d/EarthGlobe3D';
 import { EarthquakeMap } from '../map/EarthquakeMap';
 import { QuakeDetailModal } from '../monitoring/QuakeDetailModal';
 import { MagnitudeBadge } from '../common/MagnitudeBadge';
+import { ArticleModal } from '../education/ArticleModal';
+import { EDUCATIONAL_ARTICLES, EducationalArticle } from '../../data/articleData';
 import { Earthquake } from '../../types/earthquake';
 import { audio } from '../../services/audioService';
 import {
   Activity,
+  Radio,
   ShieldAlert,
   ArrowRight,
-  Sparkles,
+  ChevronRight,
   MapPin,
   Clock,
-  Radio,
+  Compass,
   BookOpen,
-  Box,
-  Gamepad2,
-  TrendingUp,
-  BarChart3,
   Layers,
+  Globe2,
+  Satellite,
+  Play,
   CheckCircle2,
   AlertTriangle,
-  Compass,
-  Map as MapIcon,
-  Globe2,
-  Crosshair,
-  Volume2,
-  VolumeX,
-  Target,
-  Satellite
+  Sparkles,
+  Eye,
+  Smile,
+  Meh,
+  Frown,
+  AlertOctagon,
+  HardHat,
+  FileText,
+  Flame,
+  Building2,
+  Navigation,
+  ExternalLink,
+  ShieldCheck,
+  TrendingUp,
+  Award,
+  Gamepad2,
+  Download
 } from 'lucide-react';
 
 export const HomeView: React.FC = () => {
@@ -39,382 +51,589 @@ export const HomeView: React.FC = () => {
     setActiveTab,
     selectedQuake,
     setSelectedQuake,
-    viewOnMap,
-    viewOn3DGlobe,
     language,
-    userLocation,
-    requestUserLocation
+    userLocation
   } = useApp();
 
-  // Mode toggle on Home: "3D GLOBE" or "2D SATELLITE MAP"
-  const [homeDisplayMode, setHomeDisplayMode] = useState<'3d' | '2d'>('3d');
-  const [globeFocusCoords, setGlobeFocusCoords] = useState<{ lat: number; lng: number } | null>(null);
+  // 3D Rupture Simulation state
+  const [simulationMagnitude, setSimulationMagnitude] = useState<number>(6.4);
+  const [activeStage, setActiveStage] = useState<SimulationStage>('overview');
 
-  const latestQuake = stats?.latestQuake || earthquakes[0];
-  const recentSignificant = earthquakes.filter(q => q.magnitude >= 4.5).slice(0, 5);
+  // Article Modal state
+  const [selectedArticle, setSelectedArticle] = useState<EducationalArticle | null>(null);
+  const [articleCategoryFilter, setArticleCategoryFilter] = useState<string>('Semua');
 
-  const handleFocusQuake = (q: Earthquake) => {
-    audio.playClick();
-    setSelectedQuake(q);
-    if (homeDisplayMode === '3d') {
-      setGlobeFocusCoords({ lat: q.latitude, lng: q.longitude });
-    }
+  // Early warning simulation countdown state
+  const [pWaveTimer, setPWaveTimer] = useState<number>(18);
+  const [isEarlyWarningActive, setIsEarlyWarningActive] = useState<boolean>(false);
+
+  // Filtered educational articles
+  const categories = ['Semua', 'Geologi', 'Mitigasi', 'Teknologi', 'Evakuasi', 'Kesiapsiagaan'];
+  const filteredArticles = articleCategoryFilter === 'Semua'
+    ? EDUCATIONAL_ARTICLES
+    : EDUCATIONAL_ARTICLES.filter(a => a.category === articleCategoryFilter);
+
+  // Early warning countdown trigger
+  const triggerEarlyWarningDemo = () => {
+    audio.playEmergencyAlert();
+    setIsEarlyWarningActive(true);
+    setPWaveTimer(18);
+
+    const interval = setInterval(() => {
+      setPWaveTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setIsEarlyWarningActive(false);
+          audio.playEarthquakeRumble(6.2, 1.2);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
+  const latestQuake = stats?.latestQuake || earthquakes[0];
+
   return (
-    <div className="space-y-12 animate-in fade-in duration-200">
-      {/* 1. IMMERSIVE 3D PLANETARY COMMAND DECK (HERO) */}
-      <section className="relative pt-4 pb-8 sm:pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          {/* Header Title & Mission */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 text-xs font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                <span>Realistic Planetary Earthquake Monitoring</span>
+    <div className="space-y-16 pb-20 animate-in fade-in duration-300">
+      {/* =========================================================================
+          1. HERO SECTION: DAYLIGHT 3D CITY RUPTURE & EDITORIAL SCROLLYTELLING
+          (Inspirasi: underwater.framer.website & SVG Ref 1)
+         ========================================================================= */}
+      <section className="relative pt-6 pb-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          {/* Top Tagline & Headline */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left Column: Editorial Typography & Functions Explanation */}
+            <div className="lg:col-span-5 space-y-6">
+              {/* Monospace Badge (SVG Ref: TERHUBUNG DENGAN BMKG & SENSOR SEISMIK) */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-700 text-xs font-mono font-bold tracking-wider uppercase">
+                <span className="w-2 h-2 rounded-full bg-amber-600 animate-ping" />
+                <span>Terhubung dengan BMKG &amp; Sensor Seismik</span>
               </div>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.1]">
-                Understand Earthquakes. <br />
-                <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-mint-400 bg-clip-text text-transparent">
-                  Stay Prepared. Save Lives.
-                </span>
-              </h1>
-            </div>
 
-            {/* DUAL MODE TOGGLE BUTTONS: "3D GLOBE" and "2D MAP" */}
-            <div className="flex items-center p-1.5 rounded-2xl bg-white/90 dark:bg-earth-surface/90 backdrop-blur-xl border border-slate-200 dark:border-emerald-900/50 shadow-xl">
-              <button
-                onClick={() => {
-                  audio.playClick();
-                  setHomeDisplayMode('3d');
-                }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition ${
-                  homeDisplayMode === '3d'
-                    ? 'bg-emerald-600 text-white shadow-md'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <Globe2 className="w-4 h-4" />
-                <span>3D GLOBE</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  audio.playClick();
-                  setHomeDisplayMode('2d');
-                }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition ${
-                  homeDisplayMode === '2d'
-                    ? 'bg-emerald-600 text-white shadow-md'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <Satellite className="w-4 h-4" />
-                <span>2D SATELLITE MAP</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Main Visual Arena with Side Telemetry Feed */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-            {/* Center/Left: 3D Globe or 2D Realistic Map */}
-            <div className="lg:col-span-8 relative">
-              {homeDisplayMode === '3d' ? (
-                <EarthGlobe3D
-                  earthquakes={earthquakes}
-                  height="580px"
-                  focusCoords={globeFocusCoords}
-                  onSelectQuake={q => setSelectedQuake(q)}
-                />
-              ) : (
-                <EarthquakeMap
-                  earthquakes={earthquakes}
-                  height="580px"
-                  onSelectQuake={q => setSelectedQuake(q)}
-                />
-              )}
-
-              {/* Top Floating Status */}
-              <div className="absolute top-4 left-4 z-10 hidden sm:flex items-center gap-2 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-emerald-900/50 text-[11px] text-emerald-300 font-bold pointer-events-none">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>USGS & BMKG REAL-TIME FEED ACTIVE</span>
+              {/* Bold Editorial Headline (SVG Ref: Gempa terjadi. Anda siap lebih dulu.) */}
+              <div className="space-y-1">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.08]">
+                  Gempa terjadi. <br />
+                  <span className="text-slate-900">Anda siap lebih dulu.</span>
+                </h1>
               </div>
-            </div>
 
-            {/* Right: Live Telemetry Feed & One-Click "Focus" Panel */}
-            <div className="lg:col-span-4 flex flex-col justify-between p-5 rounded-3xl bg-white/95 dark:bg-earth-surface/95 backdrop-blur-xl border border-slate-200 dark:border-emerald-950/60 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-emerald-950/60 pb-3">
-                <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-emerald-500" />
-                  <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
-                    Aktivitas Seismik Terkini
-                  </h3>
+              {/* Description Paragraph (SVG Ref: Aplikasi menerima peringatan dini...) */}
+              <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+                Aplikasi menerima peringatan dini guncangan gempa dari BMKG, menampilkan simulasi dampak 3D real-time, lalu memandu rute evakuasi aman dan artikel edukasi mitigasi langsung ke ponsel Anda.
+              </p>
+
+              {/* 2 Clean Feature Highlights (SVG Ref: BMKG & Rute Edukasi) */}
+              <div className="pt-2 border-t border-slate-200 grid grid-cols-2 gap-4">
+                <div className="space-y-0.5">
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">BMKG</h3>
+                  <p className="text-xs text-slate-500 leading-snug">Deteksi gelombang P-Wave real-time</p>
                 </div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Klik untuk Fokus
-                </span>
+                <div className="space-y-0.5">
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Rute &amp; Edukasi</h3>
+                  <p className="text-xs text-slate-500 leading-snug">Panduan penyelamatan &amp; titik kumpul</p>
+                </div>
               </div>
 
-              {/* Scrollable list of recent quakes with camera focus */}
-              <div className="space-y-2.5 max-h-[400px] overflow-y-auto pr-1">
-                {recentSignificant.map(quake => (
-                  <div
-                    key={quake.id}
-                    onClick={() => handleFocusQuake(quake)}
-                    className="p-3 rounded-2xl border border-slate-100 dark:border-emerald-950/60 bg-slate-50 dark:bg-earth-card hover:border-emerald-500/50 hover:bg-emerald-500/5 cursor-pointer transition flex items-center justify-between group"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <MagnitudeBadge magnitude={quake.magnitude} size="sm" />
-                      <div>
-                        <h5 className="font-extrabold text-xs text-slate-900 dark:text-white group-hover:text-emerald-400 transition line-clamp-1">
-                          {quake.location}
-                        </h5>
-                        <p className="text-[10px] text-slate-400 mt-0.5">
-                          {quake.source} • Kedalaman {quake.depth} km • {new Date(quake.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition flex-shrink-0">
-                      <Target className="w-3.5 h-3.5" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Bottom Quick-Action Buttons */}
-              <div className="pt-2 border-t border-slate-100 dark:border-emerald-950/60 flex items-center gap-2">
+              {/* White Pill CTA Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
-                  onClick={() => setActiveTab('map')}
-                  className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md transition flex items-center justify-center gap-1.5"
+                  onClick={() => {
+                    audio.playClick();
+                    const el = document.getElementById('section-features');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white hover:bg-slate-50 text-slate-900 font-bold text-sm border border-slate-300 shadow-sm transition transform hover:-translate-y-0.5"
                 >
-                  <MapIcon className="w-4 h-4" />
-                  <span>Buka Halaman Peta Lengkap</span>
+                  <span>Jelajahi fitur</span>
+                  <ArrowRight className="w-4 h-4 text-slate-700" />
                 </button>
 
                 <button
                   onClick={() => {
                     audio.playClick();
-                    requestUserLocation();
+                    setActiveTab('monitoring');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  title="Deteksi Lokasi GPS Saya"
-                  className="p-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/40 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition transform hover:-translate-y-0.5"
                 >
-                  <Crosshair className="w-4 h-4" />
+                  <Activity className="w-4 h-4 text-emerald-400" />
+                  <span>Pantau Gempa Live</span>
                 </button>
               </div>
+            </div>
+
+            {/* Right Column: 3D Animated Daylight City Rupture Scene with Sirens, Tilted Towers, and Dust */}
+            <div className="lg:col-span-7">
+              <DaylightCityRupture3D
+                magnitude={simulationMagnitude}
+                onMagnitudeChange={mag => setSimulationMagnitude(mag)}
+                activeStage={activeStage}
+                onStageChange={st => setActiveStage(st)}
+                height="620px"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. REAL-TIME STATS TELEMETRY */}
-      {stats && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-5 rounded-3xl bg-white/90 dark:bg-earth-surface/90 backdrop-blur-xl border border-slate-200 dark:border-emerald-950/60 shadow-lg">
-              <span className="text-xs text-slate-400 font-semibold block mb-1">Total Gempa Global (24 Jam)</span>
-              <span className="text-3xl font-black text-slate-900 dark:text-white block">
-                {stats.totalToday}
-              </span>
-              <span className="text-[11px] text-emerald-500 font-bold mt-1 block">
-                ✓ Sensor USGS & BMKG Terhubung
-              </span>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-white/90 dark:bg-earth-surface/90 backdrop-blur-xl border border-slate-200 dark:border-emerald-950/60 shadow-lg">
-              <span className="text-xs text-slate-400 font-semibold block mb-1">Magnitudo Tertinggi Hari Ini</span>
-              <span className="text-3xl font-black text-red-500 block">
-                M {stats.maxMagnitudeToday.toFixed(1)}
-              </span>
-              <span className="text-[11px] text-slate-400 font-semibold mt-1 block">
-                Zona Subduksi Aktif
-              </span>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-white/90 dark:bg-earth-surface/90 backdrop-blur-xl border border-slate-200 dark:border-emerald-950/60 shadow-lg">
-              <span className="text-xs text-slate-400 font-semibold block mb-1">Rata-Rata Kedalaman</span>
-              <span className="text-3xl font-black text-slate-900 dark:text-white block">
-                {stats.avgDepth} km
-              </span>
-              <span className="text-[11px] text-amber-500 font-bold mt-1 block">
-                Dominasi Kerak Dangkal
-              </span>
-            </div>
-
-            <div className="p-5 rounded-3xl bg-white/90 dark:bg-earth-surface/90 backdrop-blur-xl border border-slate-200 dark:border-emerald-950/60 shadow-lg">
-              <span className="text-xs text-slate-400 font-semibold block mb-1">Wilayah Indonesia (BMKG)</span>
-              <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400 block">
-                {stats.regionalCounts['Indonesia (BMKG)'] || 14}
-              </span>
-              <span className="text-[11px] text-slate-400 font-semibold mt-1 block">
-                InaTEWS Real-time Feeds
-              </span>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 3. LATEST SIGNIFICANT EARTHQUAKE HIGHLIGHT */}
-      {latestQuake && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-emerald-500/10 via-white dark:via-earth-card to-emerald-500/5 border border-emerald-500/30 shadow-xl space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-emerald-950/60 pb-4">
-              <div className="flex items-center gap-2.5">
-                <span className="w-3 h-3 rounded-full bg-red-500 animate-ping" />
-                <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
-                  Laporan Gempa Bumi Terbaru Terverifikasi
-                </h2>
-              </div>
-              <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                Sumber Resmi: <strong>{latestQuake.source} InaTEWS / USGS</strong>
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-              <div className="md:col-span-4 flex items-center gap-4">
-                <MagnitudeBadge magnitude={latestQuake.magnitude} size="xl" />
-                <div>
-                  <span className="text-xs text-slate-400 font-semibold block">Tingkat Energi:</span>
-                  <span className="font-extrabold text-base text-slate-900 dark:text-white">
-                    {latestQuake.magnitude >= 6.0 ? 'Gempa Signifikan / Kuat' : 'Gempa Sedang Terdeteksi'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="md:col-span-5 space-y-1">
-                <span className="text-xs text-slate-400 font-semibold block">Lokasi Episentrum:</span>
-                <h3 className="font-black text-lg text-slate-900 dark:text-white">
-                  {latestQuake.location}
-                </h3>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                  <span>Kedalaman: <strong>{latestQuake.depth} km</strong></span>
-                  <span>•</span>
-                  <span>{latestQuake.latitude.toFixed(2)}°, {latestQuake.longitude.toFixed(2)}°</span>
-                  <span>•</span>
-                  <span>{new Date(latestQuake.time).toLocaleTimeString()}</span>
-                </div>
-              </div>
-
-              <div className="md:col-span-3 flex flex-col sm:flex-row gap-2">
-                <button
-                  onClick={() => viewOnMap(latestQuake)}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md transition flex items-center justify-center gap-1.5"
-                >
-                  <MapIcon className="w-3.5 h-3.5" />
-                  <span>VIEW ON MAP</span>
-                </button>
-
-                <button
-                  onClick={() => setSelectedQuake(latestQuake)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-200 dark:bg-earth-surface hover:bg-slate-300 text-slate-800 dark:text-slate-200 font-bold text-xs transition"
-                >
-                  Detail
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* 4. DISASTER ADVENTURE GAMES PREVIEW */}
+      {/* =========================================================================
+          2. KATEGORI STATUS & SKALA INDIKATOR GEMPA (Persis Gambar 1: air quality pills)
+         ========================================================================= */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-emerald-950 via-earth-surface to-earth-dark text-white border border-emerald-900/50 shadow-2xl space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                Earthquake Adventure Experience
+        <div className="text-center max-w-2xl mx-auto space-y-2 mb-6">
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            Klasifikasi Skala Kerusakan Gempa Bumi
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            Kategori Tingkat Bahaya &amp; Magnitudo
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500">
+            Panduan kesiapsiagaan masyarakat berdasarkan skala getaran dan potensi dampak struktur fisik.
+          </p>
+        </div>
+
+        {/* 5 Status Cards in Clean Daylight Theme (Image 1 Style) */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+          {/* 1. Baik / Ringan (< 4.0) */}
+          <div className="pill-status-baik rounded-2xl p-4 flex flex-col justify-between transition-transform hover:-translate-y-1 shadow-sm">
+            <div className="flex items-center justify-between">
+              <Smile className="w-6 h-6 text-emerald-700" />
+              <span className="text-[11px] font-bold text-emerald-800">&lt; 4.0 M</span>
+            </div>
+            <div className="mt-3">
+              <span className="text-xs text-emerald-800/80 block font-medium">Getaran Halus</span>
+              <span className="text-base font-extrabold text-emerald-900">Aman / Ringan</span>
+            </div>
+          </div>
+
+          {/* 2. Sedang / Waspada (4.0 - 5.0) */}
+          <div className="pill-status-sedang rounded-2xl p-4 flex flex-col justify-between transition-transform hover:-translate-y-1 shadow-sm">
+            <div className="flex items-center justify-between">
+              <Meh className="w-6 h-6 text-blue-700" />
+              <span className="text-[11px] font-bold text-blue-800">4.0 - 4.9 M</span>
+            </div>
+            <div className="mt-3">
+              <span className="text-xs text-blue-800/80 block font-medium">Lampu Bergoyang</span>
+              <span className="text-base font-extrabold text-blue-900">Sedang</span>
+            </div>
+          </div>
+
+          {/* 3. Siaga / Terasa (5.0 - 6.0) */}
+          <div className="pill-status-siaga rounded-2xl p-4 flex flex-col justify-between transition-transform hover:-translate-y-1 shadow-sm">
+            <div className="flex items-center justify-between">
+              <Frown className="w-6 h-6 text-amber-700" />
+              <span className="text-[11px] font-bold text-amber-800">5.0 - 5.9 M</span>
+            </div>
+            <div className="mt-3">
+              <span className="text-xs text-amber-800/80 block font-medium">Dinding Retak Halus</span>
+              <span className="text-base font-extrabold text-amber-900">Waspada</span>
+            </div>
+          </div>
+
+          {/* 4. Bahaya / Merusak (6.0 - 7.0) */}
+          <div className="pill-status-bahaya rounded-2xl p-4 flex flex-col justify-between transition-transform hover:-translate-y-1 shadow-sm">
+            <div className="flex items-center justify-between">
+              <AlertTriangle className="w-6 h-6 text-red-700" />
+              <span className="text-[11px] font-bold text-red-800">6.0 - 6.9 M</span>
+            </div>
+            <div className="mt-3">
+              <span className="text-xs text-red-800/80 block font-medium">Bangunan Rusak Sedang</span>
+              <span className="text-base font-extrabold text-red-900">Bahaya</span>
+            </div>
+          </div>
+
+          {/* 5. Sangat Bahaya / Katastropik (>= 7.0) */}
+          <div className="pill-status-katastropik rounded-2xl p-4 flex flex-col justify-between transition-transform hover:-translate-y-1 shadow-sm col-span-2 sm:col-span-1">
+            <div className="flex items-center justify-between">
+              <AlertOctagon className="w-6 h-6 text-slate-800" />
+              <span className="text-[11px] font-bold text-slate-800">&ge; 7.0 M</span>
+            </div>
+            <div className="mt-3">
+              <span className="text-xs text-slate-600 block font-medium">Jalan Belah &amp; Roboh</span>
+              <span className="text-base font-extrabold text-slate-900">Berbahaya</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          3. FITUR UTAMA APLIKASI: SCROLLYTELLING MITIGASI GEMPA BUMI
+         ========================================================================= */}
+      <section id="section-features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        {/* Feature 1: Peringatan Dini BMKG & Sensor Seismik */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm">
+          <div className="lg:col-span-6 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-mono font-bold border border-emerald-200">
+              <Radio className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
+              <span>SENSOR SEISMIK &amp; PERINGATAN DINI</span>
+            </div>
+            <h3 className="text-3xl font-extrabold text-slate-900">
+              Peringatan Dini BMKG Sebelum Guncangan Merusak Tiba
+            </h3>
+            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
+              Gelombang primer (P-Wave) merambat lebih cepat dari perut bumi. Sensor BMKG menangkap sinyal ini dan mengirimkan peringatan otomatis ke ponsel Anda 10 hingga 45 detik sebelum gelombang perusak (S-Wave) menghantam lokasi Anda.
+            </p>
+            <div className="pt-2 grid grid-cols-2 gap-4 text-xs">
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <span className="font-extrabold text-slate-900 block text-base">6.000 m/s</span>
+                <span className="text-slate-500">Kecepatan rambat P-Wave awal</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <span className="font-extrabold text-slate-900 block text-base">15 - 45 Detik</span>
+                <span className="text-slate-500">Jendela emas evakuasi diri</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Live Early Warning Countdown Demo */}
+          <div className="lg:col-span-6 flex flex-col justify-center items-center p-8 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-xl space-y-6">
+            <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <span>SIMULASI DETEKSI P-WAVE REAL-TIME</span>
+            </div>
+
+            <div className="text-center space-y-1">
+              <span className="text-6xl sm:text-7xl font-mono font-black text-emerald-400 tracking-tight">
+                00:{pWaveTimer.toString().padStart(2, '0')}
               </span>
-              <h2 className="text-2xl sm:text-4xl font-black tracking-tight">
-                Permainan Petualangan Mitigasi Interaktif
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
-                Uji keterampilan penyelamatan diri Anda dalam 5 petualangan edukatif interaktif dengan sistem level, XP, dan lencana pencapaian.
+              <p className="text-xs text-slate-300 font-medium">
+                {isEarlyWarningActive
+                  ? 'Gelombang S-Wave diperkirakan tiba di lokasi!'
+                  : 'Klik tombol di bawah untuk mencoba simulasi alarm peringatan dini'}
               </p>
             </div>
 
             <button
-              onClick={() => setActiveTab('games')}
-              className="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg transition flex items-center gap-2 self-start sm:self-auto"
+              onClick={triggerEarlyWarningDemo}
+              disabled={isEarlyWarningActive}
+              className={`px-6 py-3 rounded-full text-xs font-bold transition shadow-md flex items-center gap-2 ${
+                isEarlyWarningActive
+                  ? 'bg-red-500 text-white animate-pulse'
+                  : 'bg-emerald-500 hover:bg-emerald-600 text-slate-900'
+              }`}
             >
-              <Gamepad2 className="w-4 h-4" />
-              <span>Mainkan Semua Games</span>
+              <Radio className="w-4 h-4" />
+              <span>{isEarlyWarningActive ? 'Sistem Peringatan Aktif...' : 'Uji Peringatan Dini Sekarang'}</span>
             </button>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-            {[
-              { title: 'Earthquake Survival Mission', desc: 'Keputusan penyelamatan darurat dengan konsekuensi langsung.', icon: ShieldAlert },
-              { title: 'Find the Safe Zone', desc: 'Eksplorasi visual ruangan mencari titik aman dari runtuhan.', icon: Target },
-              { title: 'Emergency Bag Challenge', desc: 'Penyusunan perbekalan bertahan hidup 72 jam pertama.', icon: Box },
-              { title: 'Earthquake Quiz', desc: 'Asah wawasan geologi dan fenomena seismik global.', icon: Sparkles },
-              { title: 'Plate Tectonic Puzzle', desc: 'Susun lempeng tektonik dan zona subduksi megathrust.', icon: Compass }
-            ].map((gm, idx) => (
-              <div
-                key={idx}
-                onClick={() => {
-                  audio.playClick();
-                  setActiveTab('games');
-                }}
-                className="p-4 rounded-2xl bg-black/40 border border-slate-800 hover:border-emerald-500/50 hover:bg-emerald-500/10 cursor-pointer transition space-y-2 group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition">
-                  <gm.icon className="w-5 h-5" />
-                </div>
-                <h4 className="font-extrabold text-xs sm:text-sm text-white group-hover:text-emerald-400 transition">
-                  {gm.title}
-                </h4>
-                <p className="text-[11px] text-slate-400 leading-snug">
-                  {gm.desc}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
-      </section>
 
-      {/* 5. CALL TO ACTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-seismo-900 text-white shadow-2xl relative overflow-hidden text-center space-y-6">
-          <div className="max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-emerald-300 px-3 py-1 rounded-full bg-white/10">
-              Disaster Resilience Call
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
-              Preparedness Starts with Knowledge.
-            </h2>
-            <p className="text-sm text-emerald-100/90 leading-relaxed">
-              Jadilah warga yang tanggap dan berdaya. Ikuti simulasi kebencanaan 3D, lengkapi checklist persiapan keluarga, dan latih refleks perlindungan diri Anda sekarang.
-            </p>
+        {/* Feature 2: Drop, Cover, Hold On (Penyelamatan 60 Detik Pertama) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm">
+          <div className="lg:col-span-6 order-2 lg:order-1 grid grid-cols-3 gap-3">
+            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-center space-y-2">
+              <div className="w-10 h-10 mx-auto rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-sm">
+                1
+              </div>
+              <h4 className="font-extrabold text-sm text-amber-900">DROP</h4>
+              <p className="text-[11px] text-amber-800 leading-tight">Merunduk berlutut ke lantai agar tidak terjatuh</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-2">
+              <div className="w-10 h-10 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center font-black text-sm">
+                2
+              </div>
+              <h4 className="font-extrabold text-sm text-emerald-900">COVER</h4>
+              <p className="text-[11px] text-emerald-800 leading-tight">Lindungi kepala dan leher di bawah meja kokoh</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center space-y-2">
+              <div className="w-10 h-10 mx-auto rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm">
+                3
+              </div>
+              <h4 className="font-extrabold text-sm text-blue-900">HOLD ON</h4>
+              <p className="text-[11px] text-blue-800 leading-tight">Pegang kaki meja erat hingga getaran mereda</p>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="lg:col-span-6 order-1 lg:order-2 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-mono font-bold border border-amber-200">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+              <span>PROTOKOL STANDAR INTERNASIONAL</span>
+            </div>
+            <h3 className="text-3xl font-extrabold text-slate-900">
+              Drop, Cover, Hold On: Penyelamatan 60 Detik Pertama
+            </h3>
+            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
+              Jangan terburu-buru berlari keluar pintu saat bangunan masih bergoyang hebat. Sebanyak 78% cedera gempa bumi diakibatkan oleh pecahan kaca jendela, runtuhnya plafon, dan benda terlempar saat orang panik bergerak.
+            </p>
             <button
               onClick={() => {
                 audio.playClick();
                 setActiveTab('simulation');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="px-6 py-3 rounded-2xl bg-white text-emerald-900 hover:bg-emerald-50 font-extrabold text-xs shadow-lg transition hover:scale-105 active:scale-95 flex items-center gap-2"
+              className="inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:text-emerald-800 pt-2 group"
             >
-              <Box className="w-4 h-4" />
-              <span>Coba Simulasi Bencana 3D</span>
+              <span>Buka Simulasi Latihan Interaktif</span>
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
+          </div>
+        </div>
 
-            <button
-              onClick={() => {
-                audio.playClick();
-                setActiveTab('mitigation');
-              }}
-              className="px-6 py-3 rounded-2xl bg-emerald-700/60 hover:bg-emerald-700 text-white border border-white/20 font-bold text-xs transition flex items-center gap-2"
-            >
-              <ShieldAlert className="w-4 h-4" />
-              <span>Panduan Mitigasi Lengkap</span>
-            </button>
+        {/* Feature 3: Rute Evakuasi & Titik Kumpul Aman (Persis SVG Mockup 2) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm">
+          <div className="lg:col-span-6 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-mono font-bold border border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-600" />
+              <span>RUTE EVAKUASI &amp; PANDUAN MITIGASI</span>
+            </div>
+            <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Jalur Menuju Tempat Aman
+            </h3>
+            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
+              Rute tercepat ke Lapangan Terbuka Sektor B, menghindari gedung bertingkat rawan runtuh dan zona patahan jalan.
+            </p>
+
+            <div className="pt-2 border-t border-slate-200 grid grid-cols-2 gap-4">
+              <div className="space-y-0.5">
+                <span className="text-3xl font-extrabold text-slate-900 block">450 m</span>
+                <span className="text-xs text-slate-500">5 menit jalan cepat ke titik kumpul</span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-3xl font-extrabold text-slate-900 block">3.500</span>
+                <span className="text-xs text-slate-500">Kapasitas jiwa area terbuka hijau</span>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button
+                onClick={() => {
+                  audio.playClick();
+                  setActiveTab('map');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white hover:bg-slate-50 text-slate-900 font-bold text-sm border border-slate-300 shadow-sm transition transform hover:-translate-y-0.5"
+              >
+                <span>Buka peta &amp; artikel</span>
+                <ArrowRight className="w-4 h-4 text-slate-700" />
+              </button>
+            </div>
+          </div>
+
+          {/* Isometric Cutaway Evacuation Graphic & Path */}
+          <div className="lg:col-span-6 p-6 rounded-2xl bg-gradient-to-br from-[#E8F5E9] via-[#CFD8DC] to-[#90A4AE] border border-slate-300/80 shadow-md space-y-4">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+              <span className="flex items-center gap-1.5">
+                <Navigation className="w-4 h-4 text-emerald-700" />
+                Koridor Evakuasi Dinamis
+              </span>
+              <span className="bg-emerald-600 text-white px-2 py-0.5 rounded-full text-[10px]">
+                Jalur Bebas Reruntuhan
+              </span>
+            </div>
+
+            {/* Visual Route Indicator */}
+            <div className="space-y-3 bg-white/90 backdrop-blur-md p-4 rounded-xl border border-slate-200">
+              <div className="flex items-center gap-3 text-xs">
+                <span className="w-3 h-3 rounded-full bg-red-500 shrink-0" />
+                <span className="text-slate-800 font-medium">Jalan Rusak / Sesar Aktif (Zona Merah Bahaya)</span>
+              </div>
+              <div className="flex items-center gap-3 text-xs pl-1">
+                <div className="w-1 h-6 border-l-2 border-dashed border-emerald-500 ml-0.5" />
+                <span className="text-emerald-700 font-bold text-[11px]">Koridor Aman Jalan Kaki (450 Meter)</span>
+              </div>
+              <div className="flex items-center gap-3 text-xs">
+                <span className="w-3 h-3 rounded-full bg-emerald-600 shrink-0" />
+                <span className="text-slate-800 font-extrabold">Lapangan Terbuka Sektor B (Titik Kumpul Utama)</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Quake Detail Modal */}
-      <QuakeDetailModal quake={selectedQuake} onClose={() => setSelectedQuake(null)} />
+      {/* =========================================================================
+          4. SECTION ARTIKEL EDUKASI GEMPA BUMI (Sesuai Permintaan User)
+         ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-mono font-bold border border-emerald-200">
+              <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+              <span>ARTIKEL &amp; RISET KEBENCANAAN</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Artikel Edukasi Gempa Bumi Terpilih
+            </h2>
+            <p className="text-sm text-slate-500 max-w-xl">
+              Informasi mendalam dan pedoman resmi bersumber dari BMKG, BNPB, dan pakar geofisika untuk membekali masyarakat dengan literasi kebencanaan.
+            </p>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => {
+                  audio.playClick();
+                  setArticleCategoryFilter(cat);
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                  articleCategoryFilter === cat
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Article Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredArticles.map(article => (
+            <div
+              key={article.id}
+              onClick={() => {
+                audio.playClick();
+                setSelectedArticle(article);
+              }}
+              className="card-daylight card-daylight-hover rounded-3xl p-6 flex flex-col justify-between cursor-pointer group"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    {article.category}
+                  </span>
+                  <span className="text-xs text-slate-500 flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5" />
+                    {article.readTime}
+                  </span>
+                </div>
+
+                <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-emerald-700 transition leading-snug">
+                  {article.title}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed line-clamp-3">
+                  {article.excerpt}
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs mt-4">
+                <span className="text-slate-600 font-medium">Oleh {article.author}</span>
+                <span className="text-emerald-700 font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  Baca Selengkapnya
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* =========================================================================
+          5. AKSES PLATFORM SEISMORA: GLOBE 3D, PETA 2D, GAMES, & MITIGASI
+         ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="text-center max-w-xl mx-auto space-y-1">
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
+            EKOSISTEM DIGITAL LENGKAP
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            Jelajahi Seluruh Fitur SEISMORA
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Card 1: Live Monitoring BMKG */}
+          <div
+            onClick={() => {
+              audio.playClick();
+              setActiveTab('monitoring');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group space-y-3"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:scale-105 transition">
+              <Activity className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-slate-900 group-hover:text-emerald-700 transition">
+              Monitoring Gempa Real-Time
+            </h4>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Feed otomatis USGS &amp; BMKG dengan filter magnitudo, kedalaman, dan waktu kejadian.
+            </p>
+          </div>
+
+          {/* Card 2: 3D Earth Globe NASA */}
+          <div
+            onClick={() => {
+              audio.playClick();
+              setActiveTab('map');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group space-y-3"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center group-hover:scale-105 transition">
+              <Globe2 className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-slate-900 group-hover:text-blue-700 transition">
+              Peta Satelit &amp; Globe 3D
+            </h4>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Eksplorasi lempeng tektonik dunia dengan citra satelit resolusi tinggi dan visualisasi episentrum.
+            </p>
+          </div>
+
+          {/* Card 3: 5 Games Edukasi Mitigasi */}
+          <div
+            onClick={() => {
+              audio.playClick();
+              setActiveTab('games');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group space-y-3"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition">
+              <Gamepad2 className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-slate-900 group-hover:text-amber-700 transition">
+              5 Game Petualangan Bencana
+            </h4>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Misi evakuasi bertahan hidup, tantangan tas siaga 9kg, tebak zona aman, dan kuis kebencanaan.
+            </p>
+          </div>
+
+          {/* Card 4: Buku Saku Mitigasi PDF */}
+          <div
+            onClick={() => {
+              audio.playClick();
+              setActiveTab('mitigation');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group space-y-3"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center group-hover:scale-105 transition">
+              <Download className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-slate-900 group-hover:text-purple-700 transition">
+              Unduh Buku Panduan PDF
+            </h4>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Checklist kesiapsiagaan darurat dan generator buku saku A4 format PDF otomatis.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ARTICLE READER MODAL */}
+      <ArticleModal
+        article={selectedArticle}
+        onClose={() => setSelectedArticle(null)}
+      />
+
+      {/* QUAKE DETAIL MODAL */}
+      <QuakeDetailModal
+        quake={selectedQuake}
+        onClose={() => setSelectedQuake(null)}
+      />
     </div>
   );
 };

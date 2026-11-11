@@ -5,9 +5,60 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply font-sans antialiased text-slate-900 bg-slate-50 dark:text-slate-100 dark:bg-earth-dark;
+  html {
+    scroll-behavior: smooth;
   }
+  body {
+    @apply font-sans antialiased text-slate-900 bg-[#F8FAFC] selection:bg-emerald-500 selection:text-white;
+  }
+}
+
+/* Daylight Editorial Card & Glass Styles */
+.card-daylight {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+}
+
+.card-daylight-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-daylight-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.08);
+  border-color: rgba(203, 213, 225, 1);
+}
+
+/* Image 1 Indicator Pill Cards Style (Baik, Sedang, Siaga, Bahaya, Berbahaya) */
+.pill-status-baik {
+  background-color: #F0FDF4;
+  border: 1.5px solid #86EFAC;
+  color: #166534;
+}
+
+.pill-status-sedang {
+  background-color: #EFF6FF;
+  border: 1.5px solid #93C5FD;
+  color: #1E40AF;
+}
+
+.pill-status-siaga {
+  background-color: #FEFCE8;
+  border: 1.5px solid #FDE047;
+  color: #854D0E;
+}
+
+.pill-status-bahaya {
+  background-color: #FEF2F2;
+  border: 1.5px solid #FCA5A5;
+  color: #991B1B;
+}
+
+.pill-status-katastropik {
+  background-color: #F8FAFC;
+  border: 1.5px solid #94A3B8;
+  color: #1E293B;
 }
 
 /* Custom modern scrollbars */
@@ -21,12 +72,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.25);
+  background: rgba(148, 163, 184, 0.4);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.45);
+  background: rgba(100, 116, 139, 0.6);
 }
 
 /* Leaflet map styles */
@@ -36,12 +87,12 @@
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 14px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-  padding: 4px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12);
+  padding: 6px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .leaflet-popup-tip {
   display: none;
 }
-
