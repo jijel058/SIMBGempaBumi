@@ -296,6 +296,17 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
     leftWalkMesh.receiveShadow = true;
     leftGroup.add(leftWalkMesh);
 
+    // Image 2 Reference: Green grass lawn slabs with rounded river stones
+    const grassMat = new THREE.MeshStandardMaterial({ color: 0x65a30d, roughness: 0.75 });
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.85 });
+
+    // Left Grass plate
+    const leftGrassGeo = new THREE.BoxGeometry(4.5, 0.4, roadLength);
+    const leftGrassMesh = new THREE.Mesh(leftGrassGeo, grassMat);
+    leftGrassMesh.position.set(-18.5, 0.35, 0);
+    leftGrassMesh.receiveShadow = true;
+    leftGroup.add(leftGrassMesh);
+
     // Left Strata Base below road
     const leftBaseGeo = new THREE.BoxGeometry(roadWidth + 5, 8, roadLength);
     const leftBaseMesh = new THREE.Mesh(leftBaseGeo, soilStrataMaterial);
@@ -318,6 +329,29 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
     rightWalkMesh.position.set(18, 0.15, 0);
     rightWalkMesh.receiveShadow = true;
     rightGroup.add(rightWalkMesh);
+
+    // Right Grass plate (Image 2)
+    const rightGrassGeo = new THREE.BoxGeometry(4.5, 0.4, roadLength);
+    const rightGrassMesh = new THREE.Mesh(rightGrassGeo, grassMat);
+    rightGrassMesh.position.set(18.5, 0.35, 0);
+    rightGrassMesh.receiveShadow = true;
+    rightGroup.add(rightGrassMesh);
+
+    // Scattered round river stones on grass (Image 2)
+    const stoneGeo = new THREE.DodecahedronGeometry(0.38, 1);
+    for (let i = 0; i < 8; i++) {
+      const stone1 = new THREE.Mesh(stoneGeo, stoneMat);
+      stone1.position.set(-18 - (Math.random() - 0.5) * 2.5, 0.65, -24 + i * 7 + Math.random() * 2);
+      stone1.scale.set(1 + Math.random() * 0.3, 0.7 + Math.random() * 0.3, 1 + Math.random() * 0.3);
+      stone1.castShadow = true;
+      leftGroup.add(stone1);
+
+      const stone2 = new THREE.Mesh(stoneGeo, stoneMat);
+      stone2.position.set(18 + (Math.random() - 0.5) * 2.5, 0.65, -22 + i * 7 + Math.random() * 2);
+      stone2.scale.set(1 + Math.random() * 0.3, 0.7 + Math.random() * 0.3, 1 + Math.random() * 0.3);
+      stone2.castShadow = true;
+      rightGroup.add(stone2);
+    }
 
     // Right Strata Base
     const rightBaseGeo = new THREE.BoxGeometry(roadWidth + 5, 8, roadLength);
@@ -684,6 +718,26 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
 
     window.addEventListener('resize', handleResize);
 
+    // Scroll driven camera interpolation (like underwater.framer.website)
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+      const progress = Math.min(Math.max(scrollY / docHeight, 0), 1);
+
+      if (progress < 0.28) {
+        cameraTargetPos.current.set(24, 20, 36);
+        cameraTargetLookAt.current.set(0, 5, 0);
+      } else if (progress < 0.65) {
+        cameraTargetPos.current.set(9, 9, 21);
+        cameraTargetLookAt.current.set(-1, 2, -2);
+      } else {
+        cameraTargetPos.current.set(32, 28, 22);
+        cameraTargetLookAt.current.set(8, 6, -6);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
     // 16. ANIMATION RENDER LOOP
     const clock = new THREE.Clock();
 
@@ -793,6 +847,7 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
       if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
       container.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
       if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }

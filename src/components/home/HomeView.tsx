@@ -257,6 +257,60 @@ export const HomeView: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* IMAGE 3 REFERENCE: 5 DISASTER HAZARD EXPLORATION TABS (Terremotos, Grietas, Tsunamis, Ceniza, Ciudades) */}
+        <div className="mt-8 p-6 rounded-3xl bg-white border border-slate-200/90 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700 block">
+                Eksplorasi Spektrum Bahaya Seismik (Image Ref #03)
+              </span>
+              <h3 className="text-lg font-extrabold text-slate-900">
+                Katalog Dampak &amp; Fenomena Geologi Global
+              </h3>
+            </div>
+            <span className="text-xs text-slate-500 font-medium">
+              BMKG &amp; Global Seismic Hazards Network
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {/* 1. Gempa Tektonik */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition cursor-pointer space-y-1.5">
+              <span className="text-xs font-mono font-bold text-amber-700 block uppercase">1. Terremotos</span>
+              <h4 className="text-xs font-extrabold text-slate-900">Gempa Tektonik</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">Pelepasan energi elastis patahan lempeng bumi.</p>
+            </div>
+
+            {/* 2. Patahan Kolosal */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition cursor-pointer space-y-1.5">
+              <span className="text-xs font-mono font-bold text-rose-700 block uppercase">2. Grietas Colosales</span>
+              <h4 className="text-xs font-extrabold text-slate-900">Retakan Sesar Darat</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">Rekahan tanah dan pergeseran aspal jalan raya.</p>
+            </div>
+
+            {/* 3. Tsunamis */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition cursor-pointer space-y-1.5">
+              <span className="text-xs font-mono font-bold text-blue-700 block uppercase">3. Tsunamis</span>
+              <h4 className="text-xs font-extrabold text-slate-900">Gelombang Tsunami</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">Dislokasi vertikal air laut akibat gempa dangkal.</p>
+            </div>
+
+            {/* 4. Abu Vulkanik */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition cursor-pointer space-y-1.5">
+              <span className="text-xs font-mono font-bold text-orange-700 block uppercase">4. Ceniza Volcánica</span>
+              <h4 className="text-xs font-extrabold text-slate-900">Aktivitas Vulkanik</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">Gempa tremor magma &amp; abu letusan gunung api.</p>
+            </div>
+
+            {/* 5. Kerusakan Kota */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition cursor-pointer space-y-1.5 col-span-2 sm:col-span-1">
+              <span className="text-xs font-mono font-bold text-emerald-700 block uppercase">5. Ciudades</span>
+              <h4 className="text-xs font-extrabold text-slate-900">Mitigasi Tata Kota</h4>
+              <p className="text-[11px] text-slate-500 leading-tight">Standar bangunan tahan getar &amp; koridor evakuasi.</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* =========================================================================
