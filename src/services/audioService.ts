@@ -30,7 +30,7 @@ class AudioService {
       this.initCtx();
       if (!this.ctx) return;
 
-      const bufferSize = this.ctx.sampleRate * durationSeconds;
+      const bufferSize = Math.max(1, Math.floor(this.ctx.sampleRate * durationSeconds));
       const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
       const data = buffer.getChannelData(0);
 

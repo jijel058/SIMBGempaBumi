@@ -1,71 +1,51 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useDiorama } from '../../context/DioramaContext';
+import { Waves } from 'lucide-react';
 import { DaylightCityRupture3D, SimulationStage } from '../simulation3d/DaylightCityRupture3D';
-import { EarthGlobe3D } from '../simulation3d/EarthGlobe3D';
-import { EarthquakeMap } from '../map/EarthquakeMap';
 import { QuakeDetailModal } from '../monitoring/QuakeDetailModal';
-import { MagnitudeBadge } from '../common/MagnitudeBadge';
 import { ArticleModal } from '../education/ArticleModal';
 import { EDUCATIONAL_ARTICLES, EducationalArticle } from '../../data/articleData';
-import { Earthquake } from '../../types/earthquake';
 import { audio } from '../../services/audioService';
 import {
   Activity,
-  Radio,
-  ShieldAlert,
   ArrowRight,
   ChevronRight,
-  MapPin,
   Clock,
-  Compass,
   BookOpen,
-  Layers,
   Globe2,
-  Satellite,
-  Play,
-  CheckCircle2,
   AlertTriangle,
-  Sparkles,
-  Eye,
   Smile,
   Meh,
   Frown,
   AlertOctagon,
-  HardHat,
-  FileText,
-  Flame,
-  Building2,
   Navigation,
-  ExternalLink,
   ShieldCheck,
-  TrendingUp,
-  Award,
   Gamepad2,
   Download
 } from 'lucide-react';
 
 export const HomeView: React.FC = () => {
   const {
-    earthquakes,
-    stats,
     setActiveTab,
     selectedQuake,
-    setSelectedQuake,
-    language,
-    userLocation
+    setSelectedQuake
   } = useApp();
 
   // 3D Rupture Simulation state
   const [simulationMagnitude, setSimulationMagnitude] = useState<number>(6.4);
+  const {
+    magnitude: dioramaMag,
+    setMagnitude: setDioramaMag,
+    timeOfDay,
+    setTimeOfDay,
+    triggerQuake
+  } = useDiorama();
   const [activeStage, setActiveStage] = useState<SimulationStage>('overview');
 
   // Article Modal state
   const [selectedArticle, setSelectedArticle] = useState<EducationalArticle | null>(null);
   const [articleCategoryFilter, setArticleCategoryFilter] = useState<string>('Semua');
-
-  // Early warning simulation countdown state
-  const [pWaveTimer, setPWaveTimer] = useState<number>(18);
-  const [isEarlyWarningActive, setIsEarlyWarningActive] = useState<boolean>(false);
 
   // Filtered educational articles
   const categories = ['Semua', 'Geologi', 'Mitigasi', 'Teknologi', 'Evakuasi', 'Kesiapsiagaan'];
@@ -73,67 +53,46 @@ export const HomeView: React.FC = () => {
     ? EDUCATIONAL_ARTICLES
     : EDUCATIONAL_ARTICLES.filter(a => a.category === articleCategoryFilter);
 
-  // Early warning countdown trigger
-  const triggerEarlyWarningDemo = () => {
-    audio.playEmergencyAlert();
-    setIsEarlyWarningActive(true);
-    setPWaveTimer(18);
-
-    const interval = setInterval(() => {
-      setPWaveTimer(prev => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setIsEarlyWarningActive(false);
-          audio.playEarthquakeRumble(6.2, 1.2);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const latestQuake = stats?.latestQuake || earthquakes[0];
-
   return (
     <div className="space-y-16 pb-20 animate-in fade-in duration-300">
       {/* =========================================================================
           1. HERO SECTION: DAYLIGHT 3D CITY RUPTURE & EDITORIAL SCROLLYTELLING
           (Inspirasi: underwater.framer.website & SVG Ref 1)
          ========================================================================= */}
-      <section className="relative pt-6 pb-10">
+      <section id="section-hero" className="relative pt-4 pb-10 lg:min-h-[calc(100vh-7rem)] flex items-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           {/* Top Tagline & Headline */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Column: Editorial Typography & Functions Explanation */}
-            <div className="lg:col-span-5 space-y-6">
+            <div className="lg:col-span-5 space-y-6 glass-panel rounded-[2rem] p-6 sm:p-8">
               {/* Monospace Badge (SVG Ref: TERHUBUNG DENGAN BMKG & SENSOR SEISMIK) */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-700 text-xs font-mono font-bold tracking-wider uppercase">
                 <span className="w-2 h-2 rounded-full bg-amber-600 animate-ping" />
                 <span>Terhubung dengan BMKG &amp; Sensor Seismik</span>
               </div>
 
-              {/* Bold Editorial Headline (SVG Ref: Gempa terjadi. Anda siap lebih dulu.) */}
+              {/* Bold Editorial Headline */}
               <div className="space-y-1">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.08]">
-                  Gempa terjadi. <br />
-                  <span className="text-slate-900">Anda siap lebih dulu.</span>
+                  Platform Edukasi Gempa <br />
+                  <span className="text-slate-900">&amp; Informasi Gempa.</span>
                 </h1>
               </div>
 
-              {/* Description Paragraph (SVG Ref: Aplikasi menerima peringatan dini...) */}
+              {/* Description Paragraph */}
               <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-                Aplikasi menerima peringatan dini guncangan gempa dari BMKG, menampilkan simulasi dampak 3D real-time, lalu memandu rute evakuasi aman dan artikel edukasi mitigasi langsung ke ponsel Anda.
+                Pusat edukasi kebumian dan informasi gempa bumi terkini dari BMKG &amp; USGS, dilengkapi simulasi visualisasi dampak 3D, panduan mitigasi bencana, serta rute evakuasi aman.
               </p>
 
-              {/* 2 Clean Feature Highlights (SVG Ref: BMKG & Rute Edukasi) */}
+              {/* 2 Clean Feature Highlights */}
               <div className="pt-2 border-t border-slate-200 grid grid-cols-2 gap-4">
                 <div className="space-y-0.5">
-                  <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">BMKG</h3>
-                  <p className="text-xs text-slate-500 leading-snug">Deteksi gelombang P-Wave real-time</p>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Informasi Gempa</h3>
+                  <p className="text-xs text-slate-500 leading-snug">Data aktivitas gempa BMKG &amp; USGS</p>
                 </div>
                 <div className="space-y-0.5">
                   <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Rute &amp; Edukasi</h3>
-                  <p className="text-xs text-slate-500 leading-snug">Panduan penyelamatan &amp; titik kumpul</p>
+                  <p className="text-xs text-slate-500 leading-snug">Materi edukasi gempa &amp; titik kumpul</p>
                 </div>
               </div>
 
@@ -165,19 +124,78 @@ export const HomeView: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column: 3D Animated Daylight City Rupture Scene with Sirens, Tilted Towers, and Dust */}
-            <div className="lg:col-span-7">
-              <DaylightCityRupture3D
-                magnitude={simulationMagnitude}
-                onMagnitudeChange={mag => setSimulationMagnitude(mag)}
-                activeStage={activeStage}
-                onStageChange={st => setActiveStage(st)}
-                height="620px"
-              />
+            {/* Right Column: the 3D earthquake diorama is the page background; this card controls it */}
+            <div className="lg:col-span-7 flex flex-col justify-end items-stretch lg:items-end min-h-[260px] lg:min-h-[560px]">
+              <div className="glass-panel rounded-[1.75rem] p-4 sm:p-5 w-full sm:max-w-md space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-700 block">
+                      Diorama Gempa Interaktif
+                    </span>
+                    <span className="text-sm font-extrabold text-slate-900">
+                      Skala Guncangan M {dioramaMag.toFixed(1)}
+                    </span>
+                  </div>
+                  <div className="flex items-center p-1 rounded-full bg-white/70 border border-white/80">
+                    <button
+                      onClick={() => {
+                        audio.playClick();
+                        setTimeOfDay('day');
+                      }}
+                      className={`px-3 py-1 rounded-full text-[11px] font-black transition ${
+                        timeOfDay === 'day' ? 'glass-btn-primary' : 'text-slate-600'
+                      }`}
+                    >
+                      Siang
+                    </button>
+                    <button
+                      onClick={() => {
+                        audio.playClick();
+                        setTimeOfDay('dusk');
+                      }}
+                      className={`px-3 py-1 rounded-full text-[11px] font-black transition ${
+                        timeOfDay === 'dusk' ? 'glass-btn-primary' : 'text-slate-600'
+                      }`}
+                    >
+                      Sore
+                    </button>
+                  </div>
+                </div>
+
+                <input
+                  type="range"
+                  min="3.0"
+                  max="8.8"
+                  step="0.1"
+                  value={dioramaMag}
+                  onChange={e => setDioramaMag(parseFloat(e.target.value))}
+                  className="w-full h-2 bg-slate-200/80 rounded-lg appearance-none cursor-pointer accent-amber-600"
+                  aria-label="Magnitudo simulasi"
+                />
+
+                <button
+                  onClick={() => {
+                    audio.playEarthquakeRumble(dioramaMag, 1.5);
+                    triggerQuake();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 h-11 rounded-full glass-btn-primary font-black text-sm"
+                >
+                  <Waves className="w-4 h-4" />
+                  Guncang Pulau Sekarang
+                </button>
+                <p className="text-[11px] text-slate-500 leading-snug">
+                  Geser slider untuk melebarkan retakan, tekan tombol untuk memicu gempa: tanah bergetar, debu naik,
+                  pohon bergoyang, dan gelombang seismik menyebar. Gerakkan mouse &amp; scroll untuk memutar pulau.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Frosted content layer keeps all text legible over the 3D background */}
+      <div className="px-3 sm:px-5">
+        <div className="max-w-[88rem] mx-auto rounded-[2.5rem] bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_24px_70px_-24px_rgba(15,23,42,0.3)] py-12 space-y-16">
 
       {/* =========================================================================
           2. KATEGORI STATUS & SKALA INDIKATOR GEMPA (Persis Gambar 1: air quality pills)
@@ -205,7 +223,7 @@ export const HomeView: React.FC = () => {
             </div>
             <div className="mt-3">
               <span className="text-xs text-emerald-800/80 block font-medium">Getaran Halus</span>
-              <span className="text-base font-extrabold text-emerald-900">Aman / Ringan</span>
+              <span className="text-base font-extrabold text-emerald-900">Ringan</span>
             </div>
           </div>
 
@@ -316,65 +334,7 @@ export const HomeView: React.FC = () => {
       {/* =========================================================================
           3. FITUR UTAMA APLIKASI: SCROLLYTELLING MITIGASI GEMPA BUMI
          ========================================================================= */}
-      <section id="section-features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        {/* Feature 1: Peringatan Dini BMKG & Sensor Seismik */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm">
-          <div className="lg:col-span-6 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-mono font-bold border border-emerald-200">
-              <Radio className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
-              <span>SENSOR SEISMIK &amp; PERINGATAN DINI</span>
-            </div>
-            <h3 className="text-3xl font-extrabold text-slate-900">
-              Peringatan Dini BMKG Sebelum Guncangan Merusak Tiba
-            </h3>
-            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
-              Gelombang primer (P-Wave) merambat lebih cepat dari perut bumi. Sensor BMKG menangkap sinyal ini dan mengirimkan peringatan otomatis ke ponsel Anda 10 hingga 45 detik sebelum gelombang perusak (S-Wave) menghantam lokasi Anda.
-            </p>
-            <div className="pt-2 grid grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                <span className="font-extrabold text-slate-900 block text-base">6.000 m/s</span>
-                <span className="text-slate-500">Kecepatan rambat P-Wave awal</span>
-              </div>
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                <span className="font-extrabold text-slate-900 block text-base">15 - 45 Detik</span>
-                <span className="text-slate-500">Jendela emas evakuasi diri</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Live Early Warning Countdown Demo */}
-          <div className="lg:col-span-6 flex flex-col justify-center items-center p-8 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-xl space-y-6">
-            <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>SIMULASI DETEKSI P-WAVE REAL-TIME</span>
-            </div>
-
-            <div className="text-center space-y-1">
-              <span className="text-6xl sm:text-7xl font-mono font-black text-emerald-400 tracking-tight">
-                00:{pWaveTimer.toString().padStart(2, '0')}
-              </span>
-              <p className="text-xs text-slate-300 font-medium">
-                {isEarlyWarningActive
-                  ? 'Gelombang S-Wave diperkirakan tiba di lokasi!'
-                  : 'Klik tombol di bawah untuk mencoba simulasi alarm peringatan dini'}
-              </p>
-            </div>
-
-            <button
-              onClick={triggerEarlyWarningDemo}
-              disabled={isEarlyWarningActive}
-              className={`px-6 py-3 rounded-full text-xs font-bold transition shadow-md flex items-center gap-2 ${
-                isEarlyWarningActive
-                  ? 'bg-red-500 text-white animate-pulse'
-                  : 'bg-emerald-500 hover:bg-emerald-600 text-slate-900'
-              }`}
-            >
-              <Radio className="w-4 h-4" />
-              <span>{isEarlyWarningActive ? 'Sistem Peringatan Aktif...' : 'Uji Peringatan Dini Sekarang'}</span>
-            </button>
-          </div>
-        </div>
-
+      <section id="section-features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 scroll-mt-28">
         {/* Feature 2: Drop, Cover, Hold On (Penyelamatan 60 Detik Pertama) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm">
           <div className="lg:col-span-6 order-2 lg:order-1 grid grid-cols-3 gap-3">
@@ -502,7 +462,7 @@ export const HomeView: React.FC = () => {
       {/* =========================================================================
           4. SECTION ARTIKEL EDUKASI GEMPA BUMI (Sesuai Permintaan User)
          ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section id="section-articles" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 scroll-mt-28">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-mono font-bold border border-emerald-200">
@@ -584,7 +544,7 @@ export const HomeView: React.FC = () => {
       {/* =========================================================================
           5. AKSES PLATFORM SEISMORA: GLOBE 3D, PETA 2D, GAMES, & MITIGASI
          ========================================================================= */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <section id="section-ecosystem" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 scroll-mt-28">
         <div className="text-center max-w-xl mx-auto space-y-1">
           <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
             EKOSISTEM DIGITAL LENGKAP
@@ -676,6 +636,25 @@ export const HomeView: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* CITY RUPTURE 3D SIMULATION (kept as its own interactive section) */}
+      <section id="section-city" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 scroll-mt-28">
+        <div className="space-y-1">
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-700">
+            Simulasi Dampak Patahan Kota
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Jalan Terbelah, Gedung Condong</h2>
+        </div>
+        <DaylightCityRupture3D
+          magnitude={simulationMagnitude}
+          onMagnitudeChange={mag => setSimulationMagnitude(mag)}
+          activeStage={activeStage}
+          onStageChange={st => setActiveStage(st)}
+          height="560px"
+        />
+      </section>
+      </div>
+      </div>
 
       {/* ARTICLE READER MODAL */}
       <ArticleModal

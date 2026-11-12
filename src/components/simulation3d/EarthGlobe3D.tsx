@@ -12,9 +12,7 @@ import {
   Info,
   Map as MapIcon,
   Cloud,
-  Sun,
-  Loader2,
-  Check
+  Loader2
 } from 'lucide-react';
 import { MagnitudeBadge } from '../common/MagnitudeBadge';
 import { audio } from '../../services/audioService';
@@ -67,9 +65,14 @@ export const EarthGlobe3D: React.FC<Props> = ({
   const wavesGroupRef = useRef<THREE.Group | null>(null);
 
   const isDraggingRef = useRef<boolean>(false);
+  const isRotatingRef = useRef<boolean>(isRotating);
   const previousMousePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const animFrameIdRef = useRef<number | null>(null);
   const targetRotationRef = useRef<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    isRotatingRef.current = isRotating;
+  }, [isRotating]);
 
   // Convert lat/lng to 3D Cartesian Vector3 on sphere of radius R
   const latLngToVector3 = useCallback((lat: number, lon: number, radius: number): THREE.Vector3 => {
@@ -113,7 +116,7 @@ export const EarthGlobe3D: React.FC<Props> = ({
     setIsLoadingTextures(true);
     setTextureStatus('Memuat Citra Satelit Bumi Asli (NASA Blue Marble)...');
 
-    const width = container.clientWidth;
+    const width = container.clientWidth || 800;
     const heightPx = container.clientHeight || 640;
 
     // 1. Scene
@@ -126,7 +129,14 @@ export const EarthGlobe3D: React.FC<Props> = ({
     cameraRef.current = camera;
 
     // 3. Renderer with antialiasing and high-precision color management
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    } catch (e) {
+      console.warn('WebGLRenderer initialization failed:', e);
+      setIsLoadingTextures(false);
+      return;
+    }
     renderer.setSize(width, heightPx);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -259,44 +269,6 @@ export const EarthGlobe3D: React.FC<Props> = ({
     const wavesGroup = new THREE.Group();
     wavesGroupRef.current = wavesGroup;
     globeGroup.add(wavesGroup);
-
-    // Populate earthquake pins from real API coordinates
-    earthquakes.forEach((quake, index) => {
-      const pos = latLngToVector3(quake.latitude, quake.longitude, earthRadius + 0.95);
-      const mag = quake.magnitude || 4.5;
-      const isSelected = selectedQuake?.id === quake.id;
-
-      let colorHex = 0x10b981; // emerald
-      if (mag >= 7.0) colorHex = 0xef4444; // red
-      else if (mag >= 6.0) colorHex = 0xf97316; // orange
-      else if (mag >= 5.0) colorHex = 0xeab308; // yellow
-
-      // Epicenter pin sphere
-      const pinSize = Math.max(1.6, (mag - 2.8) * 0.98);
-      const pinGeo = new THREE.SphereGeometry(isSelected ? pinSize * 1.6 : pinSize, 16, 16);
-      const pinMat = new THREE.MeshBasicMaterial({ color: isSelected ? 0xffffff : colorHex });
-      const pinMesh = new THREE.Mesh(pinGeo, pinMat);
-      pinMesh.position.copy(pos);
-      pinMesh.userData = { quakeIndex: index, quake };
-      markersGroup.add(pinMesh);
-
-      // Expanding pulsating seismic ripple waves around the epicenter
-      const ringGeo = new THREE.RingGeometry(pinSize * 1.2, pinSize * 2.5, 32);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: colorHex,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.8
-      });
-      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.position.copy(pos);
-      ringMesh.lookAt(new THREE.Vector3(0, 0, 0));
-      ringMesh.userData = {
-        speed: 0.018 + (mag / 10) * 0.01,
-        maxScale: Math.max(2.6, mag * 0.85)
-      };
-      wavesGroup.add(ringMesh);
-    });
 
     // 11. Earth Internal Layers (Cutaway Model)
     const layersGroup = new THREE.Group();
@@ -439,7 +411,7 @@ export const EarthGlobe3D: React.FC<Props> = ({
         ) {
           targetRotationRef.current = null;
         }
-      } else if (globeGroupRef.current && isRotating && !isDraggingRef.current) {
+      } else if (globeGroupRef.current && isRotatingRef.current && !isDraggingRef.current) {
         globeGroupRef.current.rotation.y += 0.0012;
       }
 
@@ -486,9 +458,79 @@ export const EarthGlobe3D: React.FC<Props> = ({
       container.removeEventListener('touchstart', handleTouchStart);
       container.removeEventListener('touchmove', handleTouchMove);
       container.removeEventListener('touchend', handleMouseUp);
+      scene.traverse(obj => {
+        const mesh = obj as THREE.Mesh;
+        if (mesh.geometry) mesh.geometry.dispose();
+        const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mat)) mat.forEach(m => m.dispose());
+        else if (mat) mat.dispose();
+      });
+      dayTexture.dispose();
+      normalTexture.dispose();
+      specularTexture.dispose();
+      cloudsTexture.dispose();
       renderer.dispose();
     };
-  }, [earthquakes, interactive, isRotating, latLngToVector3, selectedQuake]);
+  }, [interactive]);
+
+  // Populate / update earthquake markers without rebuilding the WebGL scene
+  useEffect(() => {
+    const markersGroup = markersGroupRef.current;
+    const wavesGroup = wavesGroupRef.current;
+    if (!markersGroup || !wavesGroup) return;
+
+    const clearGroup = (group: THREE.Group) => {
+      while (group.children.length > 0) {
+        const child = group.children[0] as THREE.Mesh;
+        if (child.geometry) child.geometry.dispose();
+        const mat = child.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mat)) mat.forEach(m => m.dispose());
+        else if (mat) mat.dispose();
+        group.remove(child);
+      }
+    };
+
+    clearGroup(markersGroup);
+    clearGroup(wavesGroup);
+
+    const earthRadius = 75;
+    earthquakes.forEach((quake, index) => {
+      const pos = latLngToVector3(quake.latitude, quake.longitude, earthRadius + 0.95);
+      const mag = quake.magnitude || 4.5;
+      const isSelected = selectedQuake?.id === quake.id;
+
+      let colorHex = 0x10b981; // emerald
+      if (mag >= 7.0) colorHex = 0xef4444; // red
+      else if (mag >= 6.0) colorHex = 0xf97316; // orange
+      else if (mag >= 5.0) colorHex = 0xeab308; // yellow
+
+      // Epicenter pin sphere
+      const pinSize = Math.max(1.6, (mag - 2.8) * 0.98);
+      const pinGeo = new THREE.SphereGeometry(isSelected ? pinSize * 1.6 : pinSize, 16, 16);
+      const pinMat = new THREE.MeshBasicMaterial({ color: isSelected ? 0xffffff : colorHex });
+      const pinMesh = new THREE.Mesh(pinGeo, pinMat);
+      pinMesh.position.copy(pos);
+      pinMesh.userData = { quakeIndex: index, quake };
+      markersGroup.add(pinMesh);
+
+      // Expanding pulsating seismic ripple waves around the epicenter
+      const ringGeo = new THREE.RingGeometry(pinSize * 1.2, pinSize * 2.5, 32);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: colorHex,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.position.copy(pos);
+      ringMesh.lookAt(new THREE.Vector3(0, 0, 0));
+      ringMesh.userData = {
+        speed: 0.018 + (mag / 10) * 0.01,
+        maxScale: Math.max(2.6, mag * 0.85)
+      };
+      wavesGroup.add(ringMesh);
+    });
+  }, [earthquakes, selectedQuake, latLngToVector3]);
 
   // Handle Layer toggles
   useEffect(() => {

@@ -7,11 +7,8 @@ import {
   Calendar,
   User,
   ShieldCheck,
-  Share2,
-  Bookmark,
   CheckCircle2,
-  BookOpen,
-  ArrowLeft
+  BookOpen
 } from 'lucide-react';
 
 interface Props {
@@ -148,3 +145,4 @@ export const ArticleModal: React.FC<Props> = ({ article, onClose }) => {
     </div>
   );
 };
+

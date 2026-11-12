@@ -5,13 +5,9 @@ import { useApp } from '../../context/AppContext';
 import { audio } from '../../services/audioService';
 import {
   Backpack,
-  CheckCircle2,
-  XCircle,
   Plus,
   Minus,
   RotateCcw,
-  Award,
-  AlertTriangle,
   Scale
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -48,7 +44,6 @@ export const EmergencyBagGame: React.FC = () => {
   const handleEvaluate = () => {
     audio.playClick();
     let score = 0;
-    const essentialItems = BAG_CHALLENGE_ITEMS.filter(i => i.isEssential);
 
     selectedItemIds.forEach(id => {
       const item = BAG_CHALLENGE_ITEMS.find(i => i.id === id);

@@ -129,7 +129,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="https://data.bmkg.go.id"
+                  href="https://data.bmkg.go.id/gempabumi/"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-1 hover:text-emerald-500 transition"

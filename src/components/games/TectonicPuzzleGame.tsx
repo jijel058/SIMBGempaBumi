@@ -2,13 +2,8 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { audio } from '../../services/audioService';
 import {
-  Globe2,
   CheckCircle2,
-  RotateCcw,
-  Award,
-  ArrowRight,
-  Sparkles,
-  Info
+  RotateCcw
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -77,7 +72,7 @@ export const TectonicPuzzleGame: React.FC = () => {
   const { addXp, awardBadge, updateGameScore } = useApp();
   const [selectedPieceId, setSelectedPieceId] = useState<string | null>(null);
   const [assignments, setAssignments] = useState<{ [slotId: string]: string }>({});
-  const [isCompleted, setIsCompleted] = useState<boolean>(false);
+  const [, setIsCompleted] = useState<boolean>(false);
 
   const handleSlotClick = (slot: PuzzleSlot) => {
     if (!selectedPieceId || assignments[slot.slotId]) return;

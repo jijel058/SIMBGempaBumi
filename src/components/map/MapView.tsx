@@ -1,23 +1,13 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useDiorama } from '../../context/DioramaContext';
 import { EarthquakeMap } from './EarthquakeMap';
 import { EarthGlobe3D } from '../simulation3d/EarthGlobe3D';
 import { QuakeDetailModal } from '../monitoring/QuakeDetailModal';
-import { MAJOR_TECTONIC_ZONES } from '../../data/tectonicPlatesGeoJSON';
 import { MagnitudeBadge } from '../common/MagnitudeBadge';
 import {
   Map as MapIcon,
   Globe2,
-  Layers,
-  Crosshair,
-  ShieldAlert,
-  Info,
-  Navigation,
-  ExternalLink,
-  Satellite,
-  Compass,
-  Activity,
-  ArrowRight,
   Smile,
   Meh,
   Frown,
@@ -34,16 +24,25 @@ export const MapView: React.FC = () => {
     earthquakes,
     selectedQuake,
     setSelectedQuake,
-    userLocation,
-    requestUserLocation,
-    viewOn3DGlobe,
-    viewOnMap,
-    language,
+    globeTargetCoords,
+    mapTargetCoords,
     setIsEmergencyModalOpen
   } = useApp();
 
-  // Mode switcher: "2D MAP" and "3D GLOBE"
-  const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
+  const { intent } = useDiorama();
+  // Mode switcher: "2D MAP" and "3D GLOBE" (can be pre-selected from the navbar sub-menu)
+  const [viewMode, setViewMode] = useState<'2d' | '3d'>(intent.mapMode ?? '2d');
+  React.useEffect(() => {
+    if (intent.mapMode) setViewMode(intent.mapMode);
+  }, [intent.nonce]);
+
+  React.useEffect(() => {
+    if (globeTargetCoords) setViewMode('3d');
+  }, [globeTargetCoords]);
+
+  React.useEffect(() => {
+    if (mapTargetCoords) setViewMode('2d');
+  }, [mapTargetCoords]);
 
   const handleSelectQuake = (quake: any) => {
     setSelectedQuake(quake);
@@ -52,7 +51,7 @@ export const MapView: React.FC = () => {
   const activeQuake = selectedQuake || earthquakes[0];
 
   const getStatusCategory = (mag: number) => {
-    if (mag < 4.0) return { label: 'Baik / Aman', textClass: 'text-emerald-700', bgClass: 'bg-emerald-50 border-emerald-300' };
+    if (mag < 4.0) return { label: 'Ringan', textClass: 'text-emerald-700', bgClass: 'bg-emerald-50 border-emerald-300' };
     if (mag < 5.0) return { label: 'Sedang / Waspada', textClass: 'text-blue-700', bgClass: 'bg-blue-50 border-blue-300' };
     if (mag < 6.0) return { label: 'Tidak Sehat / Siaga', textClass: 'text-amber-700', bgClass: 'bg-amber-50 border-amber-300' };
     if (mag < 7.0) return { label: 'Sangat Tidak Sehat / Bahaya', textClass: 'text-red-700', bgClass: 'bg-red-50 border-red-300' };
@@ -87,11 +86,10 @@ export const MapView: React.FC = () => {
               audio.playClick();
               setViewMode('2d');
             }}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition ${
-              viewMode === '2d'
-                ? 'bg-slate-900 text-white shadow-md scale-[1.02]'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition ${viewMode === '2d'
+              ? 'bg-slate-900 text-white shadow-md scale-[1.02]'
+              : 'text-slate-600 hover:text-slate-900'
+              }`}
           >
             <MapIcon className="w-4 h-4" />
             <span>2D REALISTIC MAP</span>
@@ -102,11 +100,10 @@ export const MapView: React.FC = () => {
               audio.playClick();
               setViewMode('3d');
             }}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition ${
-              viewMode === '3d'
-                ? 'bg-slate-900 text-white shadow-md scale-[1.02]'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition ${viewMode === '3d'
+              ? 'bg-slate-900 text-white shadow-md scale-[1.02]'
+              : 'text-slate-600 hover:text-slate-900'
+              }`}
           >
             <Globe2 className="w-4 h-4" />
             <span>3D REALISTIC GLOBE</span>
@@ -116,14 +113,14 @@ export const MapView: React.FC = () => {
 
       {/* 5 STATUS CARDS AT TOP (Exact match to Image 1: media_1794380676198_7f490687.jpg) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {/* Card 1: Baik */}
+        {/* Card 1: Ringan */}
         <div className="pill-status-baik rounded-2xl p-3.5 flex items-center gap-3 shadow-xs transition hover:-translate-y-0.5">
           <div className="w-9 h-9 rounded-full bg-white/80 border border-emerald-200 flex items-center justify-center shrink-0">
             <Smile className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
             <span className="text-[10px] font-bold text-emerald-800/80 block">&lt; 4.0 M</span>
-            <span className="text-xs font-extrabold text-emerald-900">Baik / Ringan</span>
+            <span className="text-xs font-extrabold text-emerald-900">Ringan</span>
           </div>
         </div>
 
@@ -185,7 +182,7 @@ export const MapView: React.FC = () => {
             earthquakes={earthquakes}
             height="700px"
             onSelectQuake={handleSelectQuake}
-            focusCoords={selectedQuake ? { lat: selectedQuake.latitude, lng: selectedQuake.longitude } : null}
+            focusCoords={globeTargetCoords || (selectedQuake ? { lat: selectedQuake.latitude, lng: selectedQuake.longitude } : null)}
           />
         )}
 

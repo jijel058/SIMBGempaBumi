@@ -3,10 +3,6 @@ import { Earthquake } from '../../types/earthquake';
 import { MagnitudeBadge } from '../common/MagnitudeBadge';
 import {
   X,
-  MapPin,
-  Clock,
-  Compass,
-  AlertTriangle,
   Waves,
   ExternalLink,
   ShieldAlert,

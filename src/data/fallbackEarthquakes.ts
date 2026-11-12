@@ -17,7 +17,7 @@ export const FALLBACK_EARTHQUAKES: Earthquake[] = [
     alert: "yellow",
     felt: 850,
     dirasakan: "IV Pelabuhan Ratu, III Bayah, III Sukabumi, II Jakarta",
-    url: "https://bmkg.go.id"
+    url: "https://data.bmkg.go.id/gempabumi/"
   },
   {
     id: "usgs-20261104-02",
@@ -51,7 +51,7 @@ export const FALLBACK_EARTHQUAKES: Earthquake[] = [
     alert: "yellow",
     felt: 340,
     dirasakan: "III Bukittinggi, II Padang Panjang",
-    url: "https://bmkg.go.id"
+    url: "https://data.bmkg.go.id/gempabumi/"
   },
   {
     id: "usgs-20261104-04",
@@ -102,7 +102,7 @@ export const FALLBACK_EARTHQUAKES: Earthquake[] = [
     alert: "yellow",
     felt: 90,
     dirasakan: "II Dobo",
-    url: "https://bmkg.go.id"
+    url: "https://data.bmkg.go.id/gempabumi/"
   },
   {
     id: "usgs-20261104-07",
@@ -153,7 +153,7 @@ export const FALLBACK_EARTHQUAKES: Earthquake[] = [
     alert: "green",
     felt: 420,
     dirasakan: "II-III Bantul, II Kulonprogo, II Sleman",
-    url: "https://bmkg.go.id"
+    url: "https://data.bmkg.go.id/gempabumi/"
   },
   {
     id: "usgs-20261104-10",
@@ -204,7 +204,7 @@ export const FALLBACK_EARTHQUAKES: Earthquake[] = [
     alert: "orange",
     felt: 560,
     dirasakan: "III Manado, III Bitung, II Ternate",
-    url: "https://bmkg.go.id"
+    url: "https://data.bmkg.go.id/gempabumi/"
   },
   {
     id: "usgs-20261104-13",
@@ -255,7 +255,126 @@ export const FALLBACK_EARTHQUAKES: Earthquake[] = [
     alert: "yellow",
     felt: 1820,
     dirasakan: "IV Cianjur, III Sukabumi, II Bogor",
-    url: "https://bmkg.go.id"
+    url: "https://data.bmkg.go.id/gempabumi/"
+  },
+  {
+    id: "bmkg-20261112-16",
+    source: "BMKG",
+    externalId: "20261112094510",
+    magnitude: 5.3,
+    location: "68 km Tenggara PACITAN-JATIM",
+    latitude: -8.74,
+    longitude: 111.38,
+    depth: 52,
+    time: Date.now() - 1000 * 60 * 50,
+    tsunami: false,
+    status: "CONFIRMED",
+    alert: "yellow",
+    felt: 620,
+    dirasakan: "III Pacitan, II-III Trenggalek, II Ponorogo, II Yogyakarta",
+    url: "https://data.bmkg.go.id/gempabumi/"
+  },
+  {
+    id: "bmkg-20261112-17",
+    source: "BMKG",
+    externalId: "20261112081244",
+    magnitude: 5.1,
+    location: "92 km BaratDaya PANGANDARAN-JABAR",
+    latitude: -8.19,
+    longitude: 107.94,
+    depth: 24,
+    time: Date.now() - 1000 * 60 * 110,
+    tsunami: false,
+    status: "CONFIRMED",
+    alert: "yellow",
+    felt: 510,
+    dirasakan: "III Pangandaran, III Garut, II Tasikmalaya, II Ciamis",
+    url: "https://data.bmkg.go.id/gempabumi/"
+  },
+  {
+    id: "bmkg-20261112-18",
+    source: "BMKG",
+    externalId: "20261112063015",
+    magnitude: 5.8,
+    location: "114 km Tenggara KUPANG-NTT",
+    latitude: -10.86,
+    longitude: 124.22,
+    depth: 19,
+    time: Date.now() - 1000 * 60 * 240,
+    tsunami: false,
+    status: "CONFIRMED",
+    alert: "yellow",
+    felt: 480,
+    dirasakan: "III-IV Kupang, III Timor Tengah Selatan",
+    url: "https://data.bmkg.go.id/gempabumi/"
+  },
+  {
+    id: "bmkg-20261112-19",
+    source: "BMKG",
+    externalId: "20261112041522",
+    magnitude: 4.6,
+    location: "19 km BaratDaya JAYAPURA-PAPUA",
+    latitude: -2.61,
+    longitude: 140.58,
+    depth: 10,
+    time: Date.now() - 1000 * 60 * 380,
+    tsunami: false,
+    status: "CONFIRMED",
+    alert: "green",
+    felt: 390,
+    dirasakan: "III Kota Jayapura, II-III Sentani",
+    url: "https://data.bmkg.go.id/gempabumi/"
+  },
+  {
+    id: "bmkg-20261112-20",
+    source: "BMKG",
+    externalId: "20261112015009",
+    magnitude: 5.4,
+    location: "76 km BaratLaut SINABANG-ACEH",
+    latitude: 2.89,
+    longitude: 95.88,
+    depth: 29,
+    time: Date.now() - 1000 * 60 * 520,
+    tsunami: false,
+    status: "CONFIRMED",
+    alert: "yellow",
+    felt: 310,
+    dirasakan: "III Simeulue, II Meulaboh",
+    url: "https://data.bmkg.go.id/gempabumi/"
+  },
+  {
+    id: "bmkg-20261112-21",
+    source: "BMKG",
+    externalId: "20261111221033",
+    magnitude: 5.0,
+    location: "34 km TimurLaut PALU-SULTENG",
+    latitude: -0.68,
+    longitude: 120.04,
+    depth: 12,
+    time: Date.now() - 1000 * 60 * 690,
+    tsunami: false,
+    status: "CONFIRMED",
+    alert: "yellow",
+    felt: 740,
+    dirasakan: "III-IV Palu, III Donggala, II Sigi",
+    url: "https://data.bmkg.go.id/gempabumi/"
+  },
+  {
+    id: "bmkg-20261112-22",
+    source: "BMKG",
+    externalId: "20261111194012",
+    magnitude: 4.7,
+    location: "45 km Tenggara KARANGASEM-BALI",
+    latitude: -8.62,
+    longitude: 115.81,
+    depth: 16,
+    time: Date.now() - 1000 * 60 * 840,
+    tsunami: false,
+    status: "CONFIRMED",
+    alert: "green",
+    felt: 890,
+    dirasakan: "III Karangasem, III Mataram, II Denpasar, II Gianyar",
+    url: "https://data.bmkg.go.id/gempabumi/"
   }
 ];
 

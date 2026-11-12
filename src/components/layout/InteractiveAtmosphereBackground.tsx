@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { useApp } from '../../context/AppContext';
 
 interface Particle {
   x: number;
@@ -31,7 +30,6 @@ export const InteractiveAtmosphereBackground: React.FC = () => {
   });
   const ringsRef = useRef<SeismicRing[]>([]);
   const animIdRef = useRef<number | null>(null);
-  const { theme } = useApp();
 
   useEffect(() => {
     const canvas = canvasRef.current;

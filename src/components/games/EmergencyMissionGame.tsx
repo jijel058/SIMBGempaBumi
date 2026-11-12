@@ -4,12 +4,9 @@ import { MissionStep, MissionChoice } from '../../types/games';
 import { useApp } from '../../context/AppContext';
 import { audio } from '../../services/audioService';
 import {
-  ShieldAlert,
   Timer,
   Award,
   RotateCcw,
-  CheckCircle2,
-  AlertTriangle,
   Heart,
   Zap,
   User,
@@ -26,7 +23,7 @@ export const EmergencyMissionGame: React.FC = () => {
   const [healthPoints, setHealthPoints] = useState<number>(100);
   const [selectedChoice, setSelectedChoice] = useState<MissionChoice | null>(null);
   const [isFinished, setIsFinished] = useState<boolean>(false);
-  const [history, setHistory] = useState<{ stepTitle: string; choice: MissionChoice }[]>([]);
+  const [, setHistory] = useState<{ stepTitle: string; choice: MissionChoice }[]>([]);
 
   const currentStep: MissionStep = EMERGENCY_MISSION_STEPS[currentStepIdx] || EMERGENCY_MISSION_STEPS[0];
 
@@ -133,7 +130,7 @@ export const EmergencyMissionGame: React.FC = () => {
               <div
                 className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black ${
                   timerSeconds <= 4
-                    ? 'bg-red-600 text-white animate-bounce'
+                    ? 'bg-red-600 text-white'
                     : 'bg-slate-800 text-amber-400'
                 }`}
               >

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Earthquake } from '../../types/earthquake';
 import { MagnitudeBadge } from '../common/MagnitudeBadge';
-import { MapPin, Navigation, Clock, Waves, ChevronRight } from 'lucide-react';
+import { Navigation, Clock, Waves, ChevronRight } from 'lucide-react';
 import { audio } from '../../services/audioService';
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 
 export const QuakeCard: React.FC<Props> = ({ quake, onClick, isLatest = false }) => {
   const timeElapsed = () => {
-    const diffMs = Date.now() - quake.time;
+    const diffMs = Math.max(0, Date.now() - quake.time);
     const diffMin = Math.floor(diffMs / 60000);
     if (diffMin < 1) return 'Baru saja';
     if (diffMin < 60) return `${diffMin} menit yang lalu`;

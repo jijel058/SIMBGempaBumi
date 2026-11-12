@@ -4,13 +4,11 @@ import { QuizQuestion } from '../../types/games';
 import { useApp } from '../../context/AppContext';
 import { audio } from '../../services/audioService';
 import {
-  Brain,
   CheckCircle2,
   XCircle,
   RotateCcw,
   Award,
   ArrowRight,
-  Sparkles,
   HelpCircle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -49,7 +47,7 @@ export const QuizGame: React.FC = () => {
       setIsAnswered(false);
     } else {
       setIsFinished(true);
-      const finalScore = score + (selectedOption === currentQ.correctIndex ? currentQ.points : 0);
+      const finalScore = score;
       addXp(finalScore);
       awardBadge('first_quiz');
       updateGameScore('quizHighscore', finalScore);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Search, X, Activity, BookOpen, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Search, X, Activity, BookOpen, ShieldAlert, ArrowRight, ArrowLeft } from 'lucide-react';
 import { MagnitudeBadge } from '../common/MagnitudeBadge';
 import { audio } from '../../services/audioService';
 
@@ -67,12 +67,33 @@ export const GlobalSearchModal: React.FC = () => {
     { title: 'Simulasi Gempa di Gedung Bertingkat', target: 'simulation' },
   ].filter(m => !qLower || m.title.toLowerCase().includes(qLower));
 
+  const handleClose = () => {
+    audio.playClick();
+    setQuery('');
+    setIsSearchModalOpen(false);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 sm:pt-24 bg-black/60 backdrop-blur-md animate-in fade-in duration-150">
-      <div className="relative w-full max-w-2xl bg-white dark:bg-earth-surface rounded-2xl border border-slate-200 dark:border-emerald-900/50 shadow-2xl overflow-hidden">
+    <div
+      onClick={handleClose}
+      className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 sm:pt-24 bg-black/60 backdrop-blur-md animate-in fade-in duration-150"
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-white dark:bg-earth-surface rounded-2xl border border-slate-200 dark:border-emerald-900/50 shadow-2xl overflow-hidden"
+      >
         {/* Search Input Bar */}
         <div className="flex items-center px-4 py-3.5 border-b border-slate-200 dark:border-emerald-950/60 gap-3">
-          <Search className="w-5 h-5 text-emerald-500" />
+          <button
+            type="button"
+            onClick={handleClose}
+            title={language === 'id' ? 'Kembali' : 'Back'}
+            aria-label={language === 'id' ? 'Kembali' : 'Back'}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition flex items-center justify-center shrink-0"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+          <Search className="w-5 h-5 text-emerald-500 shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -82,13 +103,24 @@ export const GlobalSearchModal: React.FC = () => {
             className="w-full bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm focus:outline-none"
           />
           {query && (
-            <button onClick={() => setQuery('')} className="p-1 text-slate-400 hover:text-slate-600">
+            <button
+              type="button"
+              onClick={() => setQuery('')}
+              title={language === 'id' ? 'Bersihkan pencarian' : 'Clear search'}
+              aria-label={language === 'id' ? 'Bersihkan pencarian' : 'Clear search'}
+              className="p-1 text-slate-400 hover:text-slate-600"
+            >
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-earth-dark rounded border border-slate-200 dark:border-emerald-950/60">
-            ESC
-          </kbd>
+          <button
+            type="button"
+            onClick={handleClose}
+            title={language === 'id' ? 'Tutup pencarian (ESC)' : 'Close search (ESC)'}
+            className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-earth-dark dark:hover:bg-white/10 rounded-md border border-slate-200 dark:border-emerald-950/60 transition cursor-pointer shrink-0"
+          >
+            <span>ESC</span>
+          </button>
         </div>
 
         {/* Results List */}

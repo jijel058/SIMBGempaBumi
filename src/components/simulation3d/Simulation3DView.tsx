@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useDiorama } from '../../context/DioramaContext';
 import { EarthGlobe3D } from './EarthGlobe3D';
 import { DaylightCityRupture3D } from './DaylightCityRupture3D';
 import { DisasterScenario3D } from './DisasterScenario3D';
@@ -9,17 +10,18 @@ import {
   Box,
   Globe2,
   ShieldAlert,
-  Sparkles,
-  Info,
-  Layers,
-  Activity,
-  Flame,
   Building2
 } from 'lucide-react';
 
 export const Simulation3DView: React.FC = () => {
-  const { earthquakes, selectedQuake, setSelectedQuake, language } = useApp();
-  const [activeSubTab, setActiveSubTab] = useState<'city-rupture' | 'globe' | 'scenarios'>('city-rupture');
+  const { earthquakes, selectedQuake, setSelectedQuake } = useApp();
+  const { intent } = useDiorama();
+  const [activeSubTab, setActiveSubTab] = useState<'city-rupture' | 'globe' | 'scenarios'>(
+    intent.simTab ?? 'city-rupture'
+  );
+  React.useEffect(() => {
+    if (intent.simTab) setActiveSubTab(intent.simTab);
+  }, [intent.nonce]);
   const [ruptureMag, setRuptureMag] = useState<number>(6.8);
 
   return (
@@ -48,11 +50,10 @@ export const Simulation3DView: React.FC = () => {
               audio.playClick();
               setActiveSubTab('city-rupture');
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-              activeSubTab === 'city-rupture'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'
-            }`}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${activeSubTab === 'city-rupture'
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'
+              }`}
           >
             <Building2 className="w-3.5 h-3.5" />
             <span>Patahan Kota 3D</span>
@@ -63,11 +64,10 @@ export const Simulation3DView: React.FC = () => {
               audio.playClick();
               setActiveSubTab('globe');
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-              activeSubTab === 'globe'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'
-            }`}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${activeSubTab === 'globe'
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'
+              }`}
           >
             <Globe2 className="w-3.5 h-3.5" />
             <span>Globe Seismik NASA</span>
@@ -78,11 +78,10 @@ export const Simulation3DView: React.FC = () => {
               audio.playClick();
               setActiveSubTab('scenarios');
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-              activeSubTab === 'scenarios'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'
-            }`}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${activeSubTab === 'scenarios'
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600'
+              }`}
           >
             <ShieldAlert className="w-3.5 h-3.5" />
             <span>Latihan Tanggap Darurat</span>

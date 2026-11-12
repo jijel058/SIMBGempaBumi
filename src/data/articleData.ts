@@ -226,5 +226,105 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
         }
       ]
     }
+  },
+  {
+    id: 'artikel-likuefaksi-tanah',
+    category: 'Geologi',
+    title: 'Mengenal Fenomena Likuefaksi: Ketika Tanah Padat Berubah Menjadi Lumpur Saat Gempa',
+    excerpt: 'Pelajari mengapa tanah berpasir jenuh air dapat kehilangan daya dukungnya secara tiba-tiba saat diguncang gempa besar dan bagaimana mengenali zona rawannya.',
+    author: 'Pusat Studi Geoteknik SEISMORA',
+    source: 'Kementerian ESDM - Badan Geologi & BMKG',
+    readTime: '6 menit baca',
+    date: '6 November 2026',
+    badgeColor: 'amber',
+    content: {
+      lead: 'Peristiwa gempa bumi Palu-Donggala 2018 membuka mata dunia terhadap salah satu fenomena geoteknik paling destruktif: likuefaksi (pencairan tanah), di mana kawasan pemukiman bergeser ratusan meter seolah mengapung di atas aliran lumpur.',
+      sections: [
+        {
+          title: '1. Tiga Syarat Terjadinya Likuefaksi',
+          body: 'Likuefaksi tidak terjadi di sembarang tempat. Fenomena ini hanya dapat muncul apabila tiga kondisi geologis terpenuhi secara bersamaan di satu lokasi:',
+          highlights: [
+            'Lapisan tanah berupa pasir lepas atau lanau berpasir yang belum terkonsolidasi padat (umumnya di dataran aluvial, bekas rawa, atau reklamasi pantai).',
+            'Muka air tanah (water table) sangat dangkal sehingga rongga antar butiran pasir terisi penuh oleh air (jenuh air).',
+            'Guncangan gempa bumi yang kuat dan berdurasi cukup panjang (umumnya M ≥ 6.0) yang meningkatkan tekanan air pori secara mendadak.'
+          ]
+        },
+        {
+          title: '2. Gejala Awal dan Dampak pada Bangunan',
+          body: 'Saat tekanan air pori melampaui tegangan efektif antarpasir, butiran pasir tidak lagi saling mengunci. Air bertekanan tinggi memancar keluar melalui retakan tanah membawa semburan pasir (sand boil), sementara bangunan berat di atasnya miring atau amblas.',
+          tipBox: {
+            title: 'Solusi Rekayasa Geoteknik',
+            text: 'Di kawasan rawan likuefaksi, pondasi bangunan wajib dipancang menembus lapisan pasir lepas hingga mencapai lapisan tanah keras (bedrock) di kedalaman, atau dilakukan pemadatan tanah dinamis (vibroflotation) dan pemasangan drainase vertikal.'
+          }
+        }
+      ]
+    }
+  },
+  {
+    id: 'artikel-rumah-tahan-gempa',
+    category: 'Mitigasi',
+    title: 'Panduan Membangun Rumah Tahan Gempa Sesuai Standar SNI: Kunci Keselamatan Keluarga',
+    excerpt: 'Bukan gempa yang melukai manusia, melainkan bangunan yang gagal bertahan. Simak 5 elemen struktur wajib agar rumah tinggal mampu meredam guncangan seismik.',
+    author: 'Tim Rekayasa Struktur SEISMORA',
+    source: 'Kementerian PUPR & SNI 1726',
+    readTime: '7 menit baca',
+    date: '5 November 2026',
+    badgeColor: 'blue',
+    content: {
+      lead: 'Lebih dari 85% korban jiwa saat gempa bumi di Indonesia diakibatkan oleh runtuhnya rumah tinggal non-rekayasa (non-engineered building) yang dibangun tanpa ikatan rangka beton bertulang yang benar.',
+      sections: [
+        {
+          title: '1. Ikatan Rangka Utuh: Pondasi, Sloof, Kolom, dan Ringbalk',
+          body: 'Kunci rumah tahan gempa terletak pada sistem rangka tertutup yang mengikat seluruh dinding layaknya sabuk pengaman. Pondasi batu kali harus diikat oleh balok sloof, diteruskan ke atas melalui kolom beton bertulang di setiap sudut pertemuan dinding, dan dikunci di bagian atap oleh balok ring (ringbalk).',
+          highlights: [
+            'Gunakan besi tulangan utama minimal diameter 10–12 mm dengan sengkang (begel) diameter 8 mm berjarak rapat (10–15 cm).',
+            'Kaitkan ujung sengkang dengan tekukan 135 derajat ke arah dalam beton inti agar tidak mudah lepas saat kolom bergoyang.',
+            'Pasang angkur besi setiap 6 lapis bata antara kolom dan dinding tembok.'
+          ]
+        },
+        {
+          title: '2. Pemilihan Material Atap yang Ringan',
+          body: 'Semakin berat bagian atas suatu bangunan, semakin besar gaya inersia horizontal yang mengguncang kolom saat gempa terjadi. Penggunaan rangka atap baja ringan dan penutup atap metal atau genteng ringan sangat disarankan di zona seismik tinggi.',
+          tipBox: {
+            title: 'Prinsip Denah Simetris',
+            text: 'Bentuk denah rumah yang sederhana dan simetris (persegi atau persegi panjang) jauh lebih stabil menahan puntiran gelombang gempa dibandingkan denah berbentuk L, T, atau U tanpa dilatasi pemisah struktur.'
+          }
+        }
+      ]
+    }
+  },
+  {
+    id: 'artikel-mitigasi-tsunami',
+    category: 'Evakuasi',
+    title: 'Mitigasi Tsunami Pesisir: Mengenali Tanda Alam 20-20-20 Sebelum Gelombang Tiba',
+    excerpt: 'Di pesisir Indonesia yang berhadapan dekat dengan zona subduksi, gelombang tsunami dapat tiba dalam waktu kurang dari 20 menit. Pahami rumus penyelamatan 20-20-20.',
+    author: 'Tim Peringatan Dini Pesisir SEISMORA',
+    source: 'UNESCO-IOC Tsunami Ready & BMKG',
+    readTime: '5 menit baca',
+    date: '4 November 2026',
+    badgeColor: 'emerald',
+    content: {
+      lead: 'Karena jarak antara palung subduksi Megathrust dan garis pantai selatan Jawa maupun barat Sumatra relatif dekat (100–250 km), masyarakat pesisir tidak boleh hanya menunggu sirine berbunyi, melainkan wajib memahami peringatan dini mandiri.',
+      sections: [
+        {
+          title: '1. Rumus Emas Penyelamatan Diri "20 - 20 - 20"',
+          body: 'Badan penanggulangan bencana mengampanyekan rumus sederhana 20-20-20 yang mudah diingat oleh seluruh lapisan warga pesisir:',
+          highlights: [
+            '20 Detik Pertama: Jika Anda merasakan gempa bumi yang mengguncang kuat atau mengayun lama selama lebih dari 20 detik hingga sulit berdiri...',
+            '20 Menit Waktu Evakuasi: Anda hanya memiliki waktu sekitar 20 menit untuk segera menjauhi pantai sebelum gelombang pertama tsunami tiba...',
+            '20 Meter Ketinggian: Segera evakuasi diri menuju bukit, dataran tinggi, atau Gedung Evakuasi Sementara (TES) dengan ketinggian minimal 20 meter di atas permukaan laut.'
+          ]
+        },
+        {
+          title: '2. Waspadai Gelombang Kedua dan Ketiga',
+          body: 'Tsunami bukanlah satu gelombang tunggal, melainkan rangkaian gelombang (wave train). Sering kali gelombang kedua atau ketiga justru memiliki amplitudo lebih tinggi dan arus balik (backwash) yang jauh lebih mematikan dibanding gelombang pertama.',
+          tipBox: {
+            title: 'Kearifan Lokal Smong di Simeulue',
+            text: 'Pada Tsunami Aceh 2004, warga Pulau Simeulue berhasil selamat berkat tradisi lisan "Smong": jika gempa kuat terjadi diikuti air laut surut, segera lari ke bukit tanpa mengambil harta benda!'
+          }
+        }
+      ]
+    }
   }
 ];
+

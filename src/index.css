@@ -1,21 +1,71 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import '../node_modules/tailwindcss/base.css';
+@import '../node_modules/tailwindcss/components.css';
+@import '../node_modules/tailwindcss/utilities.css';
 
 @layer base {
   html {
     scroll-behavior: smooth;
   }
   body {
-    @apply font-sans antialiased text-slate-900 bg-[#F8FAFC] selection:bg-emerald-500 selection:text-white;
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #0f172a;
+    background: #cfe6f5;
   }
+  body ::selection {
+    background-color: #10b981;
+    color: #ffffff;
+  }
+}
+
+/* ---------- Liquid-glass system (navbar, buttons, panels) ---------- */
+.glass-panel {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.46) 55%, rgba(220, 245, 238, 0.4) 100%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 2px rgba(16, 185, 129, 0.12),
+    0 10px 36px -8px rgba(15, 23, 42, 0.18);
+}
+
+.glass-btn-primary {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 45%, #047857 100%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.65),
+    inset 0 -2px 4px rgba(4, 120, 87, 0.45),
+    0 6px 16px -4px rgba(5, 150, 105, 0.5);
+  color: #fff;
+  transition: filter 0.2s, transform 0.2s;
+}
+.glass-btn-primary:hover {
+  filter: brightness(1.07);
+}
+
+.glass-btn-secondary {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(214, 240, 234, 0.55) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(20, 184, 166, 0.18),
+    0 4px 12px -3px rgba(15, 23, 42, 0.14);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: background 0.2s, transform 0.2s;
+}
+.glass-btn-secondary:hover {
+  background: linear-gradient(180deg, #ffffff 0%, rgba(205, 240, 232, 0.8) 100%);
+  transform: translateY(-1px);
 }
 
 /* Daylight Editorial Card & Glass Styles */
 .card-daylight {
   background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(226, 232, 240, 0.85);
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);

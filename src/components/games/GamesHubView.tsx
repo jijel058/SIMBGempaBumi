@@ -8,18 +8,13 @@ import { TectonicPuzzleGame } from './TectonicPuzzleGame';
 import { INITIAL_BADGES, saveUserProfile } from '../../services/storageService';
 import { audio } from '../../services/audioService';
 import {
-  Gamepad2,
   Brain,
   ShieldAlert,
-  Search,
   Backpack,
-  Globe2,
   Trophy,
   Award,
   Sparkles,
   Flame,
-  CheckCircle2,
-  User,
   Star,
   Edit3,
   Check,
@@ -28,7 +23,7 @@ import {
 } from 'lucide-react';
 
 export const GamesHubView: React.FC = () => {
-  const { userProfile, addXp, language } = useApp();
+  const { userProfile } = useApp();
   const [activeGame, setActiveGame] = useState<
     'quiz' | 'mission' | 'safe_place' | 'bag_challenge' | 'puzzle'
   >('mission');

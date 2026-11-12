@@ -8,51 +8,15 @@ import {
   ShieldAlert,
   CheckSquare,
   Square,
-  Download,
-  AlertTriangle,
-  Waves,
-  Hammer,
-  Backpack,
-  Power,
-  MapPin,
-  PhoneCall,
-  Sparkles,
-  ShieldCheck,
-  Ban,
-  Car,
-  Flame,
-  Radio,
-  HeartHandshake,
-  CheckCircle2
+  Download
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const MitigationView: React.FC = () => {
-  const { userProfile, toggleChecklist, addXp, awardBadge, language } = useApp();
+  const { userProfile, toggleChecklist, addXp, awardBadge } = useApp();
   const [activeTab, setActiveTab] = useState<'before' | 'during' | 'after'>('before');
   const [isDownloadingPdf, setIsDownloadingPdf] = useState<boolean>(false);
   const [activeStepAnim, setActiveStepAnim] = useState<number>(0);
-
-  // Icon mapper
-  const getIcon = (name: string) => {
-    switch (name) {
-      case 'Hammer': return Hammer;
-      case 'Backpack': return Backpack;
-      case 'Power': return Power;
-      case 'MapPin': return MapPin;
-      case 'PhoneCall': return PhoneCall;
-      case 'Sparkles': return Sparkles;
-      case 'ShieldCheck': return ShieldCheck;
-      case 'AlertTriangle': return AlertTriangle;
-      case 'Ban': return Ban;
-      case 'Car': return Car;
-      case 'Flame': return Flame;
-      case 'Radio': return Radio;
-      case 'Waves': return Waves;
-      case 'HeartHandshake': return HeartHandshake;
-      default: return ShieldCheck;
-    }
-  };
 
   const handleDownloadPDF = () => {
     audio.playClick();
@@ -268,7 +232,6 @@ export const MitigationView: React.FC = () => {
         {/* Items List */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {filteredItems.map(item => {
-            const Icon = getIcon(item.icon);
             const isCompleted = userProfile.completedChecklists.includes(item.id);
 
             return (

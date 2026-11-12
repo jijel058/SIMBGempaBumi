@@ -8,17 +8,9 @@ import {
   Layers,
   Crosshair,
   RotateCcw,
-  SlidersHorizontal,
-  Flame,
-  ShieldAlert,
-  Info,
-  Radio,
   Search,
-  Globe2,
-  Map as MapIcon,
   Satellite,
-  Mountain,
-  Sparkles
+  Mountain
 } from 'lucide-react';
 import { audio } from '../../services/audioService';
 
@@ -53,14 +45,13 @@ export const EarthquakeMap: React.FC<Props> = ({
     selectedQuake,
     viewOn3DGlobe,
     mapTargetCoords,
-    setMapTargetCoords,
-    language
+    setMapTargetCoords
   } = useApp();
 
   // Basemap Selector: Standard, Satellite, Terrain, Heatmap
   const [activeBasemap, setActiveBasemap] = useState<BasemapType>('satellite');
-  const [minMag, setMinMag] = useState<number>(3.0);
-  const [sourceFilter, setSourceFilter] = useState<'all' | 'BMKG' | 'USGS'>('all');
+  const [minMag] = useState<number>(3.0);
+  const [sourceFilter] = useState<'all' | 'BMKG' | 'USGS'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showTectonicPlates, setShowTectonicPlates] = useState<boolean>(true);
 
@@ -398,36 +389,6 @@ export const EarthquakeMap: React.FC<Props> = ({
             >
               <Mountain className="w-3.5 h-3.5" />
               <span>Terrain View</span>
-            </button>
-
-            <button
-              onClick={() => {
-                audio.playClick();
-                setActiveBasemap('standard');
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${
-                activeBasemap === 'standard'
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'
-              }`}
-            >
-              <MapIcon className="w-3.5 h-3.5" />
-              <span>Standard Map</span>
-            </button>
-
-            <button
-              onClick={() => {
-                audio.playClick();
-                setActiveBasemap('heatmap');
-              }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${
-                activeBasemap === 'heatmap'
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'
-              }`}
-            >
-              <Flame className="w-3.5 h-3.5 text-amber-500" />
-              <span>Heatmap</span>
             </button>
           </div>
         )}

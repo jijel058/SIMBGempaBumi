@@ -1,20 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { audio } from '../../services/audioService';
 import {
   Volume2,
   VolumeX,
-  RotateCcw,
-  Maximize2,
-  Minimize2,
-  ShieldAlert,
-  Play,
-  Flame,
-  Radio,
-  Layers,
-  Sparkles,
-  MapPin,
-  ArrowRight
+  Play
 } from 'lucide-react';
 
 export type SimulationStage = 'overview' | 'chasm' | 'evacuation';
@@ -90,6 +80,17 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
 
   // Shake clock & intensity
   const shakeIntensityRef = useRef<number>(0);
+  const magnitudeRef = useRef<number>(magnitude);
+  const isShakingRef = useRef<boolean>(false);
+  const shakeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    magnitudeRef.current = internalMagnitude;
+  }, [internalMagnitude]);
+
+  useEffect(() => {
+    isShakingRef.current = isShakingActive;
+  }, [isShakingActive]);
 
   // Helper to generate procedural canvas texture for asphalt
   const createAsphaltTexture = () => {
@@ -131,23 +132,31 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
   };
 
   // Helper to generate procedural building facade texture with windows
-  const createBuildingTexture = (baseColor: string, windowColor: string) => {
+  const createBuildingTexture = (baseColor: string, windowColor: string, cols = 6, rows = 14) => {
     const canvas = document.createElement('canvas');
-    canvas.width = 256;
-    canvas.height = 512;
+    canvas.width = cols * 42;
+    canvas.height = rows * 38;
     const ctx = canvas.getContext('2d')!;
 
     // Concrete facade background
     ctx.fillStyle = baseColor;
-    ctx.fillRect(0, 0, 256, 512);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Rows and columns of windows
-    const cols = 6;
-    const rows = 14;
+    // Subtle horizontal floor slab lines for architectural alignment
+    ctx.strokeStyle = 'rgba(100, 116, 139, 0.22)';
+    ctx.lineWidth = 2;
+    const rowStep = canvas.height / rows;
+    for (let r = 1; r < rows; r++) {
+      ctx.beginPath();
+      ctx.moveTo(0, r * rowStep);
+      ctx.lineTo(canvas.width, r * rowStep);
+      ctx.stroke();
+    }
+
     const winWidth = 24;
     const winHeight = 22;
-    const paddingX = (256 - cols * winWidth) / (cols + 1);
-    const paddingY = (512 - rows * winHeight) / (rows + 1);
+    const paddingX = (canvas.width - cols * winWidth) / (cols + 1);
+    const paddingY = (canvas.height - rows * winHeight) / (rows + 1);
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
@@ -162,15 +171,15 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
         ctx.fillRect(x, y, winWidth, winHeight);
 
         // Window frame
-        ctx.strokeStyle = '#475569';
+        ctx.strokeStyle = '#64748B';
         ctx.lineWidth = 1.5;
         ctx.strokeRect(x, y, winWidth, winHeight);
       }
     }
 
     const texture = new THREE.CanvasTexture(canvas);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
     return texture;
   };
 
@@ -183,8 +192,8 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
       cameraTargetPos.current.set(9, 9, 21);
       cameraTargetLookAt.current.set(-1, 2, -2);
     } else if (currentStage === 'evacuation') {
-      cameraTargetPos.current.set(32, 28, 22);
-      cameraTargetLookAt.current.set(8, 6, -6);
+      cameraTargetPos.current.set(28, 22, 28);
+      cameraTargetLookAt.current.set(10, 4, -4);
     }
   }, [currentStage]);
 
@@ -193,8 +202,8 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const width = container.clientWidth;
-    const heightPx = container.clientHeight;
+    const width = container.clientWidth || 800;
+    const heightPx = container.clientHeight || 620;
 
     // 1. Scene with Daylight Atmospheric Mist
     const scene = new THREE.Scene();
@@ -209,7 +218,13 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
     cameraRef.current = camera;
 
     // 3. Renderer with soft shadows
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    } catch (e) {
+      console.warn('WebGLRenderer initialization failed:', e);
+      return;
+    }
     renderer.setSize(width, heightPx);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
@@ -408,84 +423,207 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
       scene.add(rebar);
     }
 
-    // 9. HIGH-RISE BUILDINGS (TOWERS SPLITTING / LEANING LIKE SVG REFERENCE)
-    // Tower 1 (Left - Leaning at ~ -11 deg)
+    // 9. HIGH-RISE & MID-RISE BUILDINGS (UNIFIED ARCHITECTURAL STYLE & ALIGNED)
+    const generatedTextures: THREE.Texture[] = [];
+    const roofCapMaterial = new THREE.MeshStandardMaterial({
+      color: 0xe2e8f0,
+      roughness: 0.75,
+      metalness: 0.1
+    });
+    const parapetMaterial = new THREE.MeshStandardMaterial({
+      color: 0xcbd5e1,
+      roughness: 0.7,
+      metalness: 0.15
+    });
+    const acMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.6 });
+
+    const createUnifiedBuildingMaterials = (
+      baseColor: string,
+      windowColor: string,
+      colsX: number,
+      colsZ: number,
+      rows: number
+    ): THREE.MeshStandardMaterial[] => {
+      const texSideX = createBuildingTexture(baseColor, windowColor, colsZ, rows);
+      const texSideZ = createBuildingTexture(baseColor, windowColor, colsX, rows);
+      generatedTextures.push(texSideX, texSideZ);
+
+      const matSideX = new THREE.MeshStandardMaterial({
+        map: texSideX,
+        roughness: 0.65,
+        metalness: 0.2
+      });
+      const matSideZ = new THREE.MeshStandardMaterial({
+        map: texSideZ,
+        roughness: 0.65,
+        metalness: 0.2
+      });
+
+      // [+X, -X, +Y (roof), -Y (bottom), +Z, -Z]
+      return [matSideX, matSideX, roofCapMaterial, roofCapMaterial, matSideZ, matSideZ];
+    };
+
+    const addRoofParapetAndAC = (targetGroup: THREE.Group, w: number, h: number, d: number) => {
+      const parapetGeo = new THREE.BoxGeometry(w + 0.3, 0.6, d + 0.3);
+      const parapetMesh = new THREE.Mesh(parapetGeo, parapetMaterial);
+      parapetMesh.position.set(0, h + 0.3, 0);
+      parapetMesh.castShadow = true;
+      parapetMesh.receiveShadow = true;
+      targetGroup.add(parapetMesh);
+
+      const acUnitGeo = new THREE.BoxGeometry(2.2, 1.4, 2.6);
+      const acMesh = new THREE.Mesh(acUnitGeo, acMat);
+      acMesh.position.set(w * 0.15, h + 1.0, d * 0.12);
+      acMesh.castShadow = true;
+      targetGroup.add(acMesh);
+    };
+
+    interface AnimatedBuildingItem {
+      group: THREE.Group;
+      baseX: number;
+      baseZ: number;
+      baseRotZ: number;
+      freqZ: number;
+      freqX: number;
+      phase: number;
+      swayFactor: number;
+      side: 'left' | 'right';
+    }
+    const animatedBuildings: AnimatedBuildingItem[] = [];
+
+    // Tower 1 (Left Primary Tower - Aligned along left avenue)
     const tower1Group = new THREE.Group();
     towerLeftRef.current = tower1Group;
-    tower1Group.position.set(-14, 0, -4);
+    tower1Group.position.set(-16.5, 0, -5);
     scene.add(tower1Group);
 
-    const bldgTexture1 = createBuildingTexture('#CBD5E1', '#E0F2FE');
-    const towerMat1 = new THREE.MeshStandardMaterial({
-      map: bldgTexture1,
-      roughness: 0.65,
-      metalness: 0.2
-    });
-
-    const tower1Geo = new THREE.BoxGeometry(9.5, 36, 12);
-    const tower1Mesh = new THREE.Mesh(tower1Geo, towerMat1);
-    tower1Mesh.position.set(0, 18, 0);
+    const tower1Mats = createUnifiedBuildingMaterials('#CBD5E1', '#E0F2FE', 6, 7, 14);
+    const tower1Geo = new THREE.BoxGeometry(9.5, 34, 11);
+    const tower1Mesh = new THREE.Mesh(tower1Geo, tower1Mats);
+    tower1Mesh.position.set(0, 17, 0);
     tower1Mesh.castShadow = true;
     tower1Mesh.receiveShadow = true;
     tower1Group.add(tower1Mesh);
-
-    // Initial tilt of Tower 1 (-11 deg = -0.19 rad)
-    tower1Group.rotation.z = -0.16;
-
-    // Roof equipment on Tower 1
-    const acUnitGeo = new THREE.BoxGeometry(2.5, 1.8, 3);
-    const acMat = new THREE.MeshStandardMaterial({ color: 0x64748b });
-    const acMesh1 = new THREE.Mesh(acUnitGeo, acMat);
-    acMesh1.position.set(1.5, 36.9, 2);
-    tower1Group.add(acMesh1);
-
-    // Tower 2 (Right - Leaning at ~ +13 deg with split gap)
-    const tower2Group = new THREE.Group();
-    towerRightRef.current = tower2Group;
-    tower2Group.position.set(15, 0, -5);
-    scene.add(tower2Group);
-
-    const bldgTexture2 = createBuildingTexture('#B0BEC5', '#BAE6FD');
-    const towerMat2 = new THREE.MeshStandardMaterial({
-      map: bldgTexture2,
-      roughness: 0.65,
-      metalness: 0.2
+    addRoofParapetAndAC(tower1Group, 9.5, 34, 11);
+    tower1Group.rotation.z = 0.03;
+    animatedBuildings.push({
+      group: tower1Group,
+      baseX: -16.5,
+      baseZ: -5,
+      baseRotZ: 0.03,
+      freqZ: 13.5,
+      freqX: 11.0,
+      phase: 0.0,
+      swayFactor: 1.35,
+      side: 'left'
     });
 
-    const tower2Geo = new THREE.BoxGeometry(9.5, 33, 11);
-    const tower2Mesh = new THREE.Mesh(tower2Geo, towerMat2);
-    tower2Mesh.position.set(0, 16.5, 0);
+    // Tower 2 (Right Primary Tower - Aligned symmetrically along right avenue)
+    const tower2Group = new THREE.Group();
+    towerRightRef.current = tower2Group;
+    tower2Group.position.set(16.5, 0, -5);
+    scene.add(tower2Group);
+
+    const tower2Mats = createUnifiedBuildingMaterials('#CBD5E1', '#E0F2FE', 6, 7, 14);
+    const tower2Geo = new THREE.BoxGeometry(9.5, 34, 11);
+    const tower2Mesh = new THREE.Mesh(tower2Geo, tower2Mats);
+    tower2Mesh.position.set(0, 17, 0);
     tower2Mesh.castShadow = true;
     tower2Mesh.receiveShadow = true;
     tower2Group.add(tower2Mesh);
+    addRoofParapetAndAC(tower2Group, 9.5, 34, 11);
+    tower2Group.rotation.z = -0.03;
+    animatedBuildings.push({
+      group: tower2Group,
+      baseX: 16.5,
+      baseZ: -5,
+      baseRotZ: -0.03,
+      freqZ: 14.2,
+      freqX: 11.8,
+      phase: 1.2,
+      swayFactor: 1.35,
+      side: 'right'
+    });
 
-    // Initial tilt of Tower 2 (+13 deg = +0.22 rad)
-    tower2Group.rotation.z = 0.18;
+    // Mid-rise Building 1 (Left Foreground - Matching windowed architecture & aligned with Tower 1)
+    const midBldg1Group = new THREE.Group();
+    midBldg1Group.position.set(-16.5, 0, 12);
+    scene.add(midBldg1Group);
 
-    // Mid-rise residential buildings on sides
-    const midBldgGeo1 = new THREE.BoxGeometry(8, 16, 10);
-    const midMat1 = new THREE.MeshStandardMaterial({ color: 0xd7ccc8, roughness: 0.7 });
-    const midBldg1 = new THREE.Mesh(midBldgGeo1, midMat1);
-    midBldg1.position.set(-17, 8, 15);
+    const midBldg1Mats = createUnifiedBuildingMaterials('#CBD5E1', '#E0F2FE', 6, 6, 8);
+    const midBldgGeo1 = new THREE.BoxGeometry(9.5, 19.5, 9.5);
+    const midBldg1 = new THREE.Mesh(midBldgGeo1, midBldg1Mats);
+    midBldg1.position.set(0, 9.75, 0);
     midBldg1.castShadow = true;
     midBldg1.receiveShadow = true;
-    scene.add(midBldg1);
+    midBldg1Group.add(midBldg1);
+    addRoofParapetAndAC(midBldg1Group, 9.5, 19.5, 9.5);
+    animatedBuildings.push({
+      group: midBldg1Group,
+      baseX: -16.5,
+      baseZ: 12,
+      baseRotZ: 0.015,
+      freqZ: 16.0,
+      freqX: 13.4,
+      phase: 2.1,
+      swayFactor: 1.15,
+      side: 'left'
+    });
 
-    const midBldgGeo2 = new THREE.BoxGeometry(8, 18, 12);
-    const midBldg2 = new THREE.Mesh(midBldgGeo2, midMat1);
-    midBldg2.position.set(18, 9, 14);
+    // Mid-rise Building 2 (Right Foreground - Matching windowed architecture & aligned with Tower 2)
+    const midBldg2Group = new THREE.Group();
+    midBldg2Group.position.set(16.5, 0, 12);
+    scene.add(midBldg2Group);
+
+    const midBldg2Mats = createUnifiedBuildingMaterials('#CBD5E1', '#E0F2FE', 6, 6, 8);
+    const midBldgGeo2 = new THREE.BoxGeometry(9.5, 19.5, 9.5);
+    const midBldg2 = new THREE.Mesh(midBldgGeo2, midBldg2Mats);
+    midBldg2.position.set(0, 9.75, 0);
     midBldg2.castShadow = true;
     midBldg2.receiveShadow = true;
-    scene.add(midBldg2);
+    midBldg2Group.add(midBldg2);
+    addRoofParapetAndAC(midBldg2Group, 9.5, 19.5, 9.5);
+    animatedBuildings.push({
+      group: midBldg2Group,
+      baseX: 16.5,
+      baseZ: 12,
+      baseRotZ: -0.015,
+      freqZ: 15.6,
+      freqX: 12.9,
+      phase: 0.7,
+      swayFactor: 1.2,
+      side: 'right'
+    });
 
-    // Distant city silhouette in daylight fog
-    const distantBldgMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8 });
-    for (let i = 0; i < 9; i++) {
-      const h = 22 + Math.random() * 26;
-      const w = 6 + Math.random() * 4;
-      const bldg = new THREE.Mesh(new THREE.BoxGeometry(w, h, 6), distantBldgMat);
-      bldg.position.set(-35 + i * 9, h / 2, -32 - Math.random() * 8);
-      scene.add(bldg);
+    // Aligned background buildings with matching window textures
+    const backgroundSpecs = [
+      { x: -32, z: -26, w: 9, h: 24, d: 9, cols: 5, rows: 10, phase: 0.4, side: 'left' as const },
+      { x: -16.5, z: -22, w: 9.5, h: 26.5, d: 10, cols: 6, rows: 11, phase: 1.6, side: 'left' as const },
+      { x: 16.5, z: -22, w: 9.5, h: 26.5, d: 10, cols: 6, rows: 11, phase: 2.5, side: 'right' as const },
+      { x: 32, z: -26, w: 9, h: 24, d: 9, cols: 5, rows: 10, phase: 3.3, side: 'right' as const }
+    ];
+    for (const spec of backgroundSpecs) {
+      const bgGroup = new THREE.Group();
+      bgGroup.position.set(spec.x, 0, spec.z);
+      const bgMats = createUnifiedBuildingMaterials('#CBD5E1', '#E0F2FE', spec.cols, spec.cols, spec.rows);
+      const bgMesh = new THREE.Mesh(new THREE.BoxGeometry(spec.w, spec.h, spec.d), bgMats);
+      bgMesh.position.set(0, spec.h / 2, 0);
+      bgMesh.castShadow = true;
+      bgMesh.receiveShadow = true;
+      bgGroup.add(bgMesh);
+      addRoofParapetAndAC(bgGroup, spec.w, spec.h, spec.d);
+      scene.add(bgGroup);
+      animatedBuildings.push({
+        group: bgGroup,
+        baseX: spec.x,
+        baseZ: spec.z,
+        baseRotZ: spec.side === 'left' ? 0.02 : -0.02,
+        freqZ: 14.8,
+        freqX: 12.2,
+        phase: spec.phase,
+        swayFactor: 1.25,
+        side: spec.side
+      });
     }
 
     // 10. GREEN TREES & CITY PARK (SAFE ASSEMBLY ZONE ON RIGHT)
@@ -732,8 +870,8 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
         cameraTargetPos.current.set(9, 9, 21);
         cameraTargetLookAt.current.set(-1, 2, -2);
       } else {
-        cameraTargetPos.current.set(32, 28, 22);
-        cameraTargetLookAt.current.set(8, 6, -6);
+        cameraTargetPos.current.set(28, 22, 28);
+        cameraTargetLookAt.current.set(10, 4, -4);
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -758,8 +896,8 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
       camera.lookAt(currentCameraLookAt.current);
 
       // SHAKE PHYSICS & FAULT SLIP DYNAMICS
-      const currentMag = internalMagnitude;
-      const isTremorActive = isShakingActive || shakeIntensityRef.current > 0.01;
+      const currentMag = magnitudeRef.current;
+      const isTremorActive = isShakingRef.current || shakeIntensityRef.current > 0.01;
 
       // Decay manual shake impulse
       if (shakeIntensityRef.current > 0.005) {
@@ -769,35 +907,44 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
       }
 
       // Base vibration amplitude scaled by Richter magnitude
-      // M 4.0: subtle (0.01), M 6.4: noticeable (0.06), M 8.5: intense (0.18)
-      const magIntensity = Math.pow((currentMag - 3.0) / 5.5, 2.2) * 0.08;
-      const totalShake = (isTremorActive ? magIntensity + shakeIntensityRef.current : magIntensity * 0.25);
+      // M 4.0: subtle (0.015), M 6.4: noticeable (0.075), M 8.5: intense (0.20)
+      const magIntensity = Math.pow((currentMag - 2.5) / 5.5, 1.9) * 0.095;
+      const totalShake = isTremorActive ? magIntensity + shakeIntensityRef.current : magIntensity * 0.65;
 
       if (totalShake > 0.001) {
         const shakeX = Math.sin(elapsedTime * 42) * totalShake;
         const shakeY = Math.cos(elapsedTime * 36) * totalShake * 0.6;
-        const shakeZ = Math.sin(elapsedTime * 28 + 1) * totalShake;
 
         // Vibrate camera jitter
         camera.position.x += shakeX * 0.4;
         camera.position.y += shakeY * 0.3;
 
+        const faultOffset = Math.max(0, (currentMag - 5.0) * 0.15);
+
         // Vibrate Road slabs with fault offset
         if (leftRoadGroupRef.current) {
           leftRoadGroupRef.current.position.y = shakeY * 0.7;
-          leftRoadGroupRef.current.position.x = -shakeX * 0.5 - (currentMag - 5.0) * 0.15;
+          leftRoadGroupRef.current.position.x = -shakeX * 0.5 - faultOffset;
         }
         if (rightRoadGroupRef.current) {
           rightRoadGroupRef.current.position.y = -shakeY * 0.7;
-          rightRoadGroupRef.current.position.x = shakeX * 0.5 + (currentMag - 5.0) * 0.15;
+          rightRoadGroupRef.current.position.x = shakeX * 0.5 + faultOffset;
         }
 
-        // Sway Towers oscillation
-        if (towerLeftRef.current) {
-          towerLeftRef.current.rotation.z = -0.16 + Math.sin(elapsedTime * 12) * totalShake * 1.5;
-        }
-        if (towerRightRef.current) {
-          towerRightRef.current.rotation.z = 0.18 + Math.cos(elapsedTime * 14) * totalShake * 1.5;
+        // Shake & sway ALL buildings in the city
+        for (const bldg of animatedBuildings) {
+          const swayZ = Math.sin(elapsedTime * bldg.freqZ + bldg.phase) * totalShake * 1.45 * bldg.swayFactor;
+          const swayX = Math.cos(elapsedTime * bldg.freqX + bldg.phase) * totalShake * 0.85 * bldg.swayFactor;
+          const jitterX = Math.sin(elapsedTime * 38 + bldg.phase) * totalShake * 1.8;
+          const jitterY = Math.cos(elapsedTime * 34 + bldg.phase) * totalShake * 0.9;
+          const jitterZ = Math.sin(elapsedTime * 30 + bldg.phase) * totalShake * 1.2;
+
+          bldg.group.rotation.z = bldg.baseRotZ + swayZ;
+          bldg.group.rotation.x = swayX;
+          bldg.group.position.x =
+            bldg.baseX + (bldg.side === 'left' ? -faultOffset : faultOffset) + jitterX;
+          bldg.group.position.y = jitterY;
+          bldg.group.position.z = bldg.baseZ + jitterZ;
         }
       }
 
@@ -845,9 +992,19 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
 
     return () => {
       if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
+      if (shakeTimerRef.current) clearInterval(shakeTimerRef.current);
       container.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
+      scene.traverse(obj => {
+        const mesh = obj as THREE.Mesh;
+        if (mesh.geometry) mesh.geometry.dispose();
+        const mat = mesh.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mat)) mat.forEach(m => m.dispose());
+        else if (mat) mat.dispose();
+      });
+      asphaltTexture.dispose();
+      generatedTextures.forEach(tex => tex.dispose());
       if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
@@ -866,10 +1023,14 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
       audio.playEarthquakeRumble(targetMag, 1.5);
     }
 
-    const timer = setInterval(() => {
+    if (shakeTimerRef.current) {
+      clearInterval(shakeTimerRef.current);
+    }
+    shakeTimerRef.current = setInterval(() => {
       setShakeCountdown(prev => {
         if (prev <= 1) {
-          clearInterval(timer);
+          if (shakeTimerRef.current) clearInterval(shakeTimerRef.current);
+          shakeTimerRef.current = null;
           setIsShakingActive(false);
           return 0;
         }
@@ -987,7 +1148,7 @@ export const DaylightCityRupture3D: React.FC<Props> = ({
       )}
 
       {currentStage === 'evacuation' && (
-        <div className="absolute top-[32%] right-[22%] pointer-events-auto">
+        <div className="absolute bottom-[30%] right-[16%] pointer-events-auto">
           <div className="px-4 py-2 rounded-xl bg-emerald-950/90 backdrop-blur-md border border-emerald-400 text-white shadow-xl flex items-center gap-2.5">
             <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
             <div>

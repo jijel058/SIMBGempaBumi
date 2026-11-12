@@ -76,6 +76,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Targets for two-way camera flying
   const [globeTargetCoords, setGlobeTargetCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [mapTargetCoords, setMapTargetCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const activeTimeRangeRef = React.useRef<'24h' | '7d' | '30d'>('24h');
 
   // Sync dark class on <html>
   useEffect(() => {
@@ -106,7 +107,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     audio.playClick();
     setSelectedQuake(quake);
     setGlobeTargetCoords({ lat: quake.latitude, lng: quake.longitude });
-    setActiveTab('home'); // Focus on main immersive 3D Globe
+    setActiveTab('map');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -119,7 +120,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   // Fetch real earthquake data
-  const loadData = async (timeRange: '24h' | '7d' | '30d' = '24h', force = false) => {
+  const loadData = async (timeRange: '24h' | '7d' | '30d' = activeTimeRangeRef.current, force = false) => {
+    activeTimeRangeRef.current = timeRange;
     setIsLoading(true);
     try {
       const res = await fetchEarthquakes(timeRange, force);
@@ -151,10 +153,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   useEffect(() => {
-    loadData();
-    // Auto-refresh every 2.5 minutes
+    loadData('24h', false);
+    // Auto-refresh every 2.5 minutes using the currently selected timeRange
     const interval = setInterval(() => {
-      loadData('24h', false);
+      loadData(activeTimeRangeRef.current, false);
     }, 150000);
     return () => clearInterval(interval);
   }, []);

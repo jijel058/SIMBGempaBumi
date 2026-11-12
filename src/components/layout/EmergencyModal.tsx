@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { AlertOctagon, Phone, X, ShieldAlert, CheckCircle2, Siren } from 'lucide-react';
+import { AlertOctagon, Phone, X, ShieldAlert, Siren } from 'lucide-react';
 import { audio } from '../../services/audioService';
 
 export const EmergencyModal: React.FC = () => {

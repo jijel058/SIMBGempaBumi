@@ -2,21 +2,14 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { QuakeCard } from './QuakeCard';
 import { QuakeDetailModal } from './QuakeDetailModal';
-import { Earthquake, TimeRangeFilter } from '../../types/earthquake';
+import { TimeRangeFilter } from '../../types/earthquake';
 import {
   Activity,
-  Filter,
   RefreshCw,
   Search,
   SlidersHorizontal,
-  Calendar,
-  Layers,
-  MapPin,
   AlertTriangle,
-  ArrowUpDown,
-  Radio,
-  CheckCircle2,
-  Clock
+  ArrowUpDown
 } from 'lucide-react';
 import { audio } from '../../services/audioService';
 
@@ -24,23 +17,21 @@ export const MonitoringView: React.FC = () => {
   const {
     earthquakes,
     stats,
-    isLive,
     lastUpdated,
     isLoading,
     apiError,
     refreshEarthquakes,
     selectedQuake,
-    setSelectedQuake,
-    language
+    setSelectedQuake
   } = useApp();
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [minMagnitude, setMinMagnitude] = useState<number>(0);
-  const [maxDepth, setMaxDepth] = useState<number>(800);
+  const [maxDepth] = useState<number>(800);
   const [timeRange, setTimeRange] = useState<TimeRangeFilter>('24h');
   const [selectedSource, setSelectedSource] = useState<'all' | 'BMKG' | 'USGS'>('all');
-  const [tsunamiOnly, setTsunamiOnly] = useState<boolean>(false);
+  const [tsunamiOnly] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<'time' | 'magnitude' | 'depth'>('time');
 
   const handleTimeRangeChange = (tr: TimeRangeFilter) => {
@@ -55,8 +46,17 @@ export const MonitoringView: React.FC = () => {
   };
 
   // Filter & Sort
+  const maxAgeMs =
+    timeRange === '24h'
+      ? 24 * 60 * 60 * 1000
+      : timeRange === '7d'
+        ? 7 * 24 * 60 * 60 * 1000
+        : 30 * 24 * 60 * 60 * 1000;
+
   const filteredQuakes = earthquakes
     .filter(q => {
+      const ageMs = Date.now() - q.time;
+      if (ageMs > maxAgeMs) return false;
       if (searchQuery.trim()) {
         const ql = searchQuery.toLowerCase();
         if (!q.location.toLowerCase().includes(ql) && !q.source.toLowerCase().includes(ql)) {
@@ -130,11 +130,11 @@ export const MonitoringView: React.FC = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 rounded-2xl bg-white dark:bg-earth-card border border-slate-200 dark:border-emerald-950/60 shadow-sm">
             <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
-              <span>Total Gempa (24 Jam)</span>
+              <span>Total Gempa ({timeRange === '24h' ? '24 Jam' : timeRange === '7d' ? '7 Hari' : '30 Hari'})</span>
               <Activity className="w-4 h-4 text-emerald-500" />
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white">
-              {stats.totalToday} <span className="text-xs font-normal text-slate-400">Kejadian</span>
+              {filteredQuakes.length} <span className="text-xs font-normal text-slate-400">Kejadian</span>
             </div>
           </div>
 

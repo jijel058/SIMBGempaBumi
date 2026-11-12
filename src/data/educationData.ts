@@ -13,7 +13,7 @@ export interface EducationModule {
       title: string;
       text: string;
     };
-    diagramType?: 'hypocenter' | 'waves' | 'faults' | 'liquefaction' | 'layers';
+    diagramType?: 'hypocenter' | 'waves' | 'faults' | 'liquefaction' | 'layers' | 'mmi';
   }[];
 }
 
@@ -146,6 +146,164 @@ export const EDUCATION_MODULES: EducationModule[] = [
           'Tsunami: Gelombang laut raksasa dengan kecepatan rambat ratusan km/jam di laut dalam yang menghantam pesisir.',
           'Kebakaran Kota: Patahnya pipa gas dan kabel listrik tegangan tinggi bersamaan dengan rusaknya hidran air pemadam.',
           'Trauma Psikologis & Disrupsi Sosial: Gangguan stres pascatrauma (PTSD) pada anak-anak, dislokasi tempat tinggal, dan kerugian ekonomi senilai miliaran rupiah.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'megathrust-indonesia',
+    badge: 'Modul E',
+    title: 'Peta Tektonik, Megathrust & Sesar Aktif Indonesia',
+    subtitle: 'Memetakan jalur subduksi lempeng samudra dan jaringan patahan darat yang melintasi kepulauan Nusantara.',
+    readTime: '8 menit baca',
+    sections: [
+      {
+        heading: '1. Mengapa Indonesia Memiliki Aktivitas Gempa Sangat Tinggi?',
+        content: 'Kepulauan Indonesia berada tepat di pertemuan empat lempeng tektonik besar dunia: Lempeng Indo-Australia di selatan, Lempeng Eurasia di barat dan utara, Lempeng Pasifik di timur, serta Lempeng Laut Filipina di timur laut. Interaksi konvergen dan transform antarlempeng ini menjadikan Indonesia bagian paling aktif dari Cincin Api Pasifik (Pacific Ring of Fire).',
+        callout: {
+          type: 'info',
+          title: 'Data Seismisitas Nasional BMKG',
+          text: 'Jaringan sensor BMKG mencatat rata-rata 8.000 hingga 11.000 kejadian gempa bumi setiap tahunnya di wilayah Indonesia, di mana sekitar 200–300 di antaranya merupakan gempa yang dirasakan masyarakat.'
+        }
+      },
+      {
+        heading: '2. Mengenal Zona Megathrust di Busur Kepulauan',
+        content: 'Megathrust adalah bidang kontak subduksi dangkal (kedalaman kurang dari 50 km) tempat lempeng samudra menunjam ke bawah lempeng benua. Ketika bidang kontak ini terkunci (locked zone) selama puluhan hingga ratusan tahun, akumulasi regangan elastisnya dapat memicu gempa bermagnitudo M ≥ 8.0:',
+        bulletPoints: [
+          'Segmen Barat Sumatra: Meliputi Megathrust Aceh-Andaman, Nias-Simeulue, Batu, Mentawai-Siberut, Mentawai-Pagai, hingga Enggano.',
+          'Segmen Selat Sunda & Selatan Jawa: Meliputi Megathrust Selat Sunda-Banten, Jawa Barat-Jawa Tengah, dan Jawa Timur yang berhadapan langsung dengan Samudra Hindia.',
+          'Segmen Timur Nusantara: Meliputi busur Sumba, Banda, Sulawesi Utara, Halmahera, hingga Utara Papua.'
+        ]
+      },
+      {
+        heading: '3. Jaringan Sesar Darat Aktif yang Wajib Diwaspadai',
+        content: 'Selain subduksi di laut, daratan Indonesia dibelah oleh ratusan segmen sesar aktif dangkal yang dekat dengan pusat kota dan pemukiman padat:',
+        bulletPoints: [
+          'Pulau Sumatra: Sesar Besar Sumatra (Great Sumatran Fault / Sesar Semangko) sepanjang 1.900 km dari Aceh hingga Teluk Semangko Lampung.',
+          'Pulau Jawa: Sesar Cimandiri, Sesar Lembang, Sesar Cugenang, dan Sesar Baribis di Jawa Barat; Sesar Merapi-Merbabu dan Sesar Opak di DIY-Jawa Tengah; serta Sesar Kendeng di Jawa Timur.',
+          'Sulawesi, Maluku & Papua: Sesar Palu-Koro dan Sesar Matano di Sulawesi (pergerakan sangat cepat ~40 mm/tahun), Sesar Sorong, Sesar Yapen, dan Sesar Tarera-Aiduna di Papua.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'peringatan-dini-bmkg',
+    badge: 'Modul F',
+    title: 'Cara Membaca Parameter BMKG, Skala MMI & Tsunami',
+    subtitle: 'Panduan praktis menafsirkan informasi resmi gempa bumi dan peringatan dini tsunami dari BMKG.',
+    readTime: '7 menit baca',
+    sections: [
+      {
+        heading: '1. Bedah Format Laporan Gempa Resmi BMKG',
+        content: 'Setiap kali gempa terjadi, sistem InaTEWS (Indonesia Tsunami Early Warning System) BMKG mempublikasikan parameter gempa dalam waktu kurang dari 3–5 menit:',
+        bulletPoints: [
+          'Waktu Kejadian (OT / Origin Time): Waktu persis saat batuan pertama kali patah di hiposentrum (dalam WIB/WITA/WIT atau UTC).',
+          'Magnitudo (M): Ukuran kekuatan energi gempa pada sumbernya. Nilai ini dapat diperbarui (dimutakhirkan) setelah gelombang terekam lengkap oleh stasiun seismograf yang lebih jauh.',
+          'Kedalaman (Depth): Jarak vertikal dari permukaan bumi ke hiposentrum. Semakin dangkal (< 20 km) pada magnitudo yang sama, guncangan di dekat episentrum akan semakin menyentak kuat.',
+          'Peta Guncangan (Shakemap): Peta kontur warna yang memvisualisasikan distribusi guncangan permukaan dalam skala intensitas MMI.'
+        ]
+      },
+      {
+        heading: '2. Memahami Skala Intensitas MMI (I hingga XII)',
+        content: 'BMKG membagi skala dampak guncangan menggunakan Skala Intensitas Modified Mercalli (MMI) dan SIG-BMKG:',
+        diagramType: 'mmi',
+        bulletPoints: [
+          'I – II MMI (Tidak Dirasakan / Dirasakan Ringan): Hanya tercatat oleh alat atau dirasakan oleh sedikit orang yang sedang diam di lantai atas gedung.',
+          'III – IV MMI (Dirasakan Nyata di Dalam Rumah): Terasa seperti truk berat melintas, lampu gantung berayun, jendela dan pintu berderik.',
+          'V – VI MMI (Getaran Kuat & Kerusakan Ringan): Semua warga terbangun dan berlari keluar, plester dinding retak, barang-barang di rak berjatuhan.',
+          'VII – VIII MMI (Kerusakan Sedang hingga Berat): Bangunan dengan konstruksi lemah mengalami keruntuhan dinding, cerobong dan monumen tumbang.',
+          'IX – XII MMI (Kerusakan Masif / Katastropik): Bangunan rangka beton mengalami kerusakan struktur berat, jembatan bergeser, dan permukaan tanah terbelah.'
+        ]
+      },
+      {
+        heading: '3. Syarat Fisis Gempa Pemicu Tsunami & Tanda Alam',
+        content: 'Tidak semua gempa di laut menimbulkan tsunami. Tsunami umumnya terbentuk apabila memenuhi empat kriteria utama secara bersamaan:',
+        bulletPoints: [
+          'Episentrum berada di bawah dasar laut.',
+          'Magnitudo besar (umumnya M ≥ 7.0, atau M ≥ 6.5 jika memicu longsoran bawah laut).',
+          'Kedalaman hiposentrum dangkal (kurang dari 70 km).',
+          'Mekanisme patahan berupa sesar naik (thrust) atau sesar turun (normal) yang menggerakkan kolom air laut secara vertikal.',
+          'Tanda Alam Pesisir: Jika setelah gempa terasa kuat Anda melihat air laut surut secara tiba-tiba dan terdengar suara gemuruh dari arah laut, JANGAN tunggu sirine—segera lari ke dataran tinggi!'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'bangunan-tahan-gempa',
+    badge: 'Modul G',
+    title: 'Prinsip Struktur & Rumah Tahan Gempa (SNI)',
+    subtitle: 'Mengenal rekayasa struktur beton bertulang, teknologi isolator seismik, dan arsitektur vernakular Nusantara.',
+    readTime: '6 menit baca',
+    sections: [
+      {
+        heading: '1. Tiga Filosofi Utama Bangunan Tahan Gempa',
+        content: 'Menurut standar rekayasa kegempaan (SNI 1726), bangunan tahan gempa bukan berarti bangunan yang tidak bisa rusak sama sekali, melainkan dirancang dengan tiga prinsip keselamatan:',
+        bulletPoints: [
+          'Gempa Ringan: Bangunan tidak boleh mengalami kerusakan baik pada elemen struktural maupun non-struktural.',
+          'Gempa Sedang: Elemen non-struktural (dinding bata plesteran) boleh mengalami retak ringan yang dapat diperbaiki, namun struktur utama (kolom dan balok) tetap utuh.',
+          'Gempa Kuat / Besar: Bangunan boleh mengalami kerusakan struktural demi menyerap energi gempa (daktilitas), tetapi TIDAK BOLEH RUNTUH MENDADAK agar penghuni punya waktu keluar dengan selamat.'
+        ]
+      },
+      {
+        heading: '2. Syarat Konstruksi Rumah Sederhana Tahan Gempa',
+        content: 'Untuk rumah tinggal 1–2 lantai, kekuatan utama terletak pada sistem pengikat rangka beton bertulang yang menyatu (kesatuan struktur):',
+        bulletPoints: [
+          'Pondasi menerus di atas tanah keras yang terikat kuat dengan balok Sloof beton bertulang.',
+          'Kolom praktis dan kolom utama dengan tulangan besi berstandar serta sengkang (begel) yang rapat pada ujung-ujung sambungan.',
+          'Balok keliling atas (Ringbalk) yang mengikat seluruh ujung atas kolom dan kuda-kuda atap menjadi satu kesatuan kaku.',
+          'Angkur besi setiap 6 lapis pasangan bata antara kolom dengan dinding agar tembok tidak roboh keluar saat terguncang.'
+        ],
+        callout: {
+          type: 'warning',
+          title: 'Waspada Bahaya Soft-Story (Lantai Dasar Lemah)',
+          text: 'Hindari membuat lantai dasar yang terlalu terbuka tanpa dinding geser atau kolom memadai (seperti ruko dengan parkiran terbuka di lantai 1 dan beban berat di lantai 2–3), karena sangat rawan patah dan amblas saat gempa!'
+        }
+      },
+      {
+        heading: '3. Teknologi Peredam Gempa Modern',
+        content: 'Pada gedung pencakar langit, rumah sakit, dan jembatan strategis, insinyur sipil menerapkan teknologi kontrol respons seismik:',
+        bulletPoints: [
+          'Base Isolation (Isolator Dasar): Bantalan karet berlapis baja dan inti timbal (Lead Rubber Bearing) yang dipasang di antara pondasi dan kolom bawah gedung untuk memisahkan gedung dari guncangan tanah.',
+          'Tuned Mass Damper (Bandul Peredam): Bola baja raksasa ratusan ton di puncak gedung tinggi yang bergerak berlawanan arah ayunan gedung untuk menstabilkan struktur.',
+          'Viscous Wall & Brace Damper: Peredam hidrolik diagonal pada rangka gedung yang menyerap energi kinetik guncangan layaknya shockbreaker kendaraan.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'mitigasi-evakuasi',
+    badge: 'Modul H',
+    title: 'Protokol Tanggap Darurat: Sebelum, Saat & Sesudah Gempa',
+    subtitle: 'Langkah-langkah praktis penyelamatan nyawa di berbagai situasi: rumah, gedung bertingkat, sekolah, dan jalan raya.',
+    readTime: '7 menit baca',
+    sections: [
+      {
+        heading: '1. Fase Pra-Bencana (Kesiapsiagaan Keluarga)',
+        content: 'Kesiapsiagaan sebelum bencana terjadi dapat memangkas risiko cedera hingga lebih dari 70%:',
+        bulletPoints: [
+          'Amankan Perabot Tinggi: Pasang siku L (wall bracket) untuk mengikat lemari pakaian, rak buku, dan pemanas air ke dinding.',
+          'Pindahkan Benda Berat ke Bawah: Jangan menaruh barang pecah belah atau koper berat di atas lemari atau di atas kepala tempat tidur.',
+          'Kenali Utilitas Rumah: Pastikan seluruh anggota keluarga tahu cara mematikan sakelar listrik utama (MCB) dan mencabut regulator tabung gas LPG.',
+          'Siapkan Tas Siaga 72 Jam: Sediakan air minum, makanan tahan lama, kotak P3K, senter, peluit, powerbank, dan salinan dokumen penting di dekat pintu keluar.'
+        ]
+      },
+      {
+        heading: '2. Fase Saat Gempa Terjadi (60 Detik Krusial)',
+        content: 'Tindakan Anda dalam 60 detik pertama saat tanah berguncang menentukan keselamatan Anda:',
+        bulletPoints: [
+          'Di Dalam Ruangan: Lakukan DROP (merunduk), COVER (lindungi kepala di kolong meja kokoh), dan HOLD ON (pegang kaki meja). Jauhi jendela kaca dan lampu gantung.',
+          'Di Gedung Tinggi / Mall: JANGAN PERNAH menggunakan Lift/Elevator! Tetap berlindung di dekat kolom struktur dalam ruangan hingga guncangan berhenti, lalu turun melalui tangga darurat.',
+          'Di Luar Ruangan: Jauhi gedung kaca, tiang listrik, pohon besar, dan papan reklame. Cari area lapangan terbuka.',
+          'Saat Mengemudi: Kurangi kecepatan secara bertahap, nyalakan lampu hazard, dan menepi di tempat terbuka yang jauh dari jembatan layang (flyover), terowongan, atau lereng tebing.'
+        ]
+      },
+      {
+        heading: '3. Fase Pascagempa (Pemeriksaan & Pemulihan Awal)',
+        content: 'Setelah guncangan utama berhenti, bahaya belum sepenuhnya berlalu:',
+        bulletPoints: [
+          'Waspadai Gempa Susulan (Aftershocks): Gempa susulan dapat meruntuhkan struktur dinding yang sudah retak akibat gempa utama.',
+          'Periksa Kebocoran Gas & Korsleting: Jika tercium bau gas, segera buka jendela dan keluar tanpa menyalakan korek api atau sakelar lampu.',
+          'Pantau Informasi Resmi: Hanya ikuti pengumuman resmi dari kanal terverifikasi BMKG, BNPB, dan BPBD setempat; jangan menyebarkan kabar bohong (hoaks) prediksi waktu gempa.'
         ]
       }
     ]

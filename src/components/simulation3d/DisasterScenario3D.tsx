@@ -11,18 +11,15 @@ import {
   Car,
   Play,
   RotateCcw,
-  ShieldCheck,
-  AlertTriangle,
   Award,
   Timer,
   CheckCircle2,
-  XCircle,
-  Sparkles
+  XCircle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const DisasterScenario3D: React.FC = () => {
-  const { addXp, awardBadge, language } = useApp();
+  const { addXp, awardBadge } = useApp();
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('sim-home');
   const [simulationState, setSimulationState] = useState<'idle' | 'running' | 'completed'>('idle');
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState<number>(0);
@@ -157,14 +154,10 @@ export const DisasterScenario3D: React.FC = () => {
       </div>
 
       {/* Main Simulation Viewport Container */}
-      <div
-        className={`relative rounded-2xl overflow-hidden border border-emerald-950/60 bg-gradient-to-b from-earth-card to-earth-dark shadow-2xl p-6 sm:p-8 transition-transform duration-75 ${
-          isShaking ? 'animate-[bounce_0.2s_infinite]' : ''
-        }`}
-      >
-        {/* Shaking Seismic Ambient Overlay */}
+      <div className="relative rounded-2xl overflow-hidden border border-emerald-950/60 bg-gradient-to-b from-earth-card to-earth-dark shadow-2xl p-6 sm:p-8">
+        {/* Seismic Status Border Overlay (Static, without bouncing the question box) */}
         {isShaking && (
-          <div className="absolute inset-0 bg-red-500/10 pointer-events-none animate-pulse border-2 border-red-500/30 rounded-2xl z-0" />
+          <div className="absolute inset-0 bg-red-500/5 pointer-events-none border border-red-500/25 rounded-2xl z-0" />
         )}
 
         {/* State 1: IDLE / BRIEFING */}
@@ -221,7 +214,7 @@ export const DisasterScenario3D: React.FC = () => {
               <div
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black ${
                   timerSeconds <= 4
-                    ? 'bg-red-500 text-white animate-bounce'
+                    ? 'bg-red-500 text-white'
                     : 'bg-black/50 text-amber-300 border border-amber-500/30'
                 }`}
               >
