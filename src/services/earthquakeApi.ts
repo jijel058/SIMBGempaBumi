@@ -104,8 +104,8 @@ function mapBmkgItem(item: any, isLatest = false): Earthquake {
   };
 }
 
-const CACHE_KEY = 'seismora_quakes_cache_v5';
-const CACHE_TIMESTAMP_KEY = 'seismora_quakes_cache_time_v5';
+const CACHE_KEY = 'seismora_quakes_cache_v7';
+const CACHE_TIMESTAMP_KEY = 'seismora_quakes_cache_time_v7';
 const CACHE_TTL_MS = 3 * 60 * 1000; // 3 minutes
 
 const TIME_RANGE_MAX_AGE_MS: Record<TimeRangeFilter, number> = {
@@ -141,6 +141,24 @@ export async function fetchEarthquakes(
   const collectedQuakes: Earthquake[] = [];
   let isLive = false;
   let fetchError = '';
+
+  // 0. Fetch Indonesian Earthquakes from XAMPP MySQL Database (seismora_db.gempa_indonesia) if XAMPP Apache/MySQL is active
+  try {
+    const res = await fetch('http://localhost/seismora/api_gempa.php', {
+      signal: AbortSignal.timeout(1800)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data?.earthquakes) && data.earthquakes.length > 0) {
+        data.earthquakes.forEach((q: Earthquake) => {
+          collectedQuakes.push(q);
+        });
+        isLive = true;
+      }
+    }
+  } catch {
+    // XAMPP Apache/MySQL belum aktif; data gempa Indonesia dari database tetap dimuat dari fallbackEarthquakes
+  }
 
   // 1. Fetch BMKG real data from https://data.bmkg.go.id/gempabumi/ (Autogempa, Gempa Terkini M5.0+, & Gempa Dirasakan)
   try {
@@ -248,10 +266,17 @@ export async function fetchEarthquakes(
     uniqueQuakes.push(q);
   }
 
-  // Ensure BMKG earthquakes are always present even if BMKG endpoint is blocked by CORS/network while USGS succeeds
+  // Ensure BMKG earthquakes and Indonesian Historical Database records (bmkg-db-*) are always present
   let finalQuakes = uniqueQuakes;
+  FALLBACK_EARTHQUAKES.filter(fb => fb.id.startsWith('bmkg-db-')).forEach(fb => {
+    if (!seenIds.has(fb.externalId)) {
+      finalQuakes.push({ ...fb });
+      seenIds.add(fb.externalId);
+    }
+  });
+
   const bmkgCount = finalQuakes.filter(q => q.source === 'BMKG').length;
-  if (bmkgCount < 5) {
+  if (bmkgCount < 10) {
     FALLBACK_EARTHQUAKES.filter(fb => fb.source === 'BMKG').forEach(fb => {
       if (!seenIds.has(fb.externalId)) {
         finalQuakes.push({ ...fb });
