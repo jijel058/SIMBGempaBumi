@@ -9,23 +9,23 @@ interface Props {
 export const MagnitudeBadge: React.FC<Props> = ({ magnitude, size = 'md', showLabel = false }) => {
   const mag = typeof magnitude === 'number' ? magnitude : 0;
   
-  let colorClass = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+  let colorClass = 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30';
   let badgeLabel = 'Ringan';
 
   if (mag >= 7.0) {
-    colorClass = 'bg-red-500/20 text-red-400 border-red-500/40 shadow-red-500/20 shadow-sm animate-pulse';
+    colorClass = 'bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/40 shadow-red-500/20 shadow-sm animate-pulse';
     badgeLabel = 'Besar / Merusak';
   } else if (mag >= 6.0) {
-    colorClass = 'bg-orange-500/20 text-orange-400 border-orange-500/40 shadow-orange-500/15 shadow-sm';
+    colorClass = 'bg-orange-500/20 text-orange-700 dark:text-orange-400 border-orange-500/40 shadow-orange-500/15 shadow-sm';
     badgeLabel = 'Kuat';
   } else if (mag >= 5.0) {
-    colorClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+    colorClass = 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-500/40';
     badgeLabel = 'Sedang';
   } else if (mag >= 4.0) {
-    colorClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+    colorClass = 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/30';
     badgeLabel = 'Ringan';
   } else {
-    colorClass = 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+    colorClass = 'bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-500/30';
     badgeLabel = 'Mikro';
   }
 

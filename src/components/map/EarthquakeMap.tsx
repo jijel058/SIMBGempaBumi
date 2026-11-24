@@ -8,7 +8,6 @@ import {
   Layers,
   Crosshair,
   RotateCcw,
-  Search,
   Satellite,
   Mountain
 } from 'lucide-react';
@@ -52,7 +51,6 @@ export const EarthquakeMap: React.FC<Props> = ({
   const [activeBasemap, setActiveBasemap] = useState<BasemapType>('satellite');
   const [minMag] = useState<number>(3.0);
   const [sourceFilter] = useState<'all' | 'BMKG' | 'USGS'>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [showTectonicPlates, setShowTectonicPlates] = useState<boolean>(true);
 
   // Initialize Leaflet Map
@@ -185,12 +183,6 @@ export const EarthquakeMap: React.FC<Props> = ({
     const filtered = earthquakes.filter(q => {
       if (q.magnitude < minMag) return false;
       if (sourceFilter !== 'all' && q.source !== sourceFilter) return false;
-      if (searchQuery.trim()) {
-        const qLower = searchQuery.toLowerCase();
-        if (!q.location.toLowerCase().includes(qLower) && !q.source.toLowerCase().includes(qLower)) {
-          return false;
-        }
-      }
       return true;
     });
 
@@ -309,7 +301,7 @@ export const EarthquakeMap: React.FC<Props> = ({
 
       markersLayer.addLayer(marker);
     });
-  }, [earthquakes, minMag, sourceFilter, searchQuery, activeBasemap, selectedQuake, viewOn3DGlobe, onSelectQuake, setSelectedQuake]);
+  }, [earthquakes, minMag, sourceFilter, activeBasemap, selectedQuake, viewOn3DGlobe, onSelectQuake, setSelectedQuake]);
 
   const handlePanToUser = () => {
     audio.playClick();
@@ -393,20 +385,8 @@ export const EarthquakeMap: React.FC<Props> = ({
           </div>
         )}
 
-        {/* Right Search & Controls */}
+        {/* Right Controls */}
         <div className="flex flex-wrap items-center gap-2 pointer-events-auto">
-          {/* Quick Search */}
-          <div className="relative bg-white/95 dark:bg-earth-surface/95 backdrop-blur-xl rounded-xl shadow-lg border border-slate-200 dark:border-emerald-900/50">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Cari lokasi/negara..."
-              className="pl-7 pr-3 py-1.5 bg-transparent text-xs text-slate-900 dark:text-white rounded-xl focus:outline-none w-36 sm:w-48 font-medium"
-            />
-          </div>
-
           {/* Tectonic Plates Toggle */}
           <button
             onClick={() => {

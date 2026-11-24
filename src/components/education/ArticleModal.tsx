@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { EducationalArticle } from '../../data/articleData';
 import { audio } from '../../services/audioService';
 import {
@@ -19,8 +20,11 @@ interface Props {
 export const ArticleModal: React.FC<Props> = ({ article, onClose }) => {
   if (!article) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+  return createPortal(
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200"
+    >
       <div
         className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8 max-h-[90vh] flex flex-col"
         onClick={e => e.stopPropagation()}
@@ -142,7 +146,8 @@ export const ArticleModal: React.FC<Props> = ({ article, onClose }) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
