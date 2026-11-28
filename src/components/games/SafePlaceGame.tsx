@@ -1,3 +1,11 @@
+/**
+ * FILE: src/components/games/SafePlaceGame.tsx
+ * FUNGSI: Komponen permainan visual "Find the Safe Zone" (Mencari titik berlindung aman di dalam ruangan).
+ * ISI:
+ * - Merender gambar ilustrasi vektor SVG lengkap untuk Ruang Tamu (Living Room) dan Ruang Kelas (Classroom).
+ * - Menampilkan titik-titik interaktif (hotspots) untuk menguji apakah pengguna dapat membedakan zona aman
+ *   (kolong meja kokoh, sudut struktur, kolom beton) dan zona bahaya (jendela kaca, lampu gantung, rak buku tinggi).
+ */
 import React, { useState } from 'react';
 import { SAFE_PLACE_ROOMS } from '../../data/safePlaceData';
 import { SafePlaceRoom, SafePlaceHotspot } from '../../types/games';

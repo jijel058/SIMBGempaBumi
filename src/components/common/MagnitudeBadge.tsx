@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/common/MagnitudeBadge.tsx
+ * FUNGSI: Komponen lencana (badge) visual untuk menampilkan angka kekuatan magnitudo gempa (misal: M 5.6).
+ * ISI:
+ * - Memberikan warna indikator otomatis berdasarkan tingkat bahaya:
+ *   Abu-abu (< 4.0 Mikro), Hijau (4.0-4.9 Ringan), Kuning (5.0-5.9 Sedang), Oranye (6.0-6.9 Kuat), Merah (>= 7.0 Besar).
+ */
 import React from 'react';
 
 interface Props {

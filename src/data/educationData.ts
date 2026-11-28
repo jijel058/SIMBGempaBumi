@@ -1,3 +1,9 @@
+/**
+ * FILE: src/data/educationData.ts
+ * FUNGSI: Menyimpan materi 8 Modul Pembelajaran (Modul A s/d Modul H) seputar sains gempa bumi,
+ *         lempeng tektonik, Megathrust Indonesia, pembacaan parameter BMKG, konstruksi tahan gempa SNI,
+ *         dan protokol evakuasi darurat.
+ */
 export interface EducationModule {
   id: string;
   badge: string;

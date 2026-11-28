@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/games/EmergencyMissionGame.tsx
+ * FUNGSI: Komponen permainan petualangan interaktif "Earthquake Survival Mission".
+ * ISI:
+ * - Menyajikan skenario keputusan tanggap darurat bercabang dengan batas waktu (timer) dan indikator kesehatan (HP 100%).
+ * - Memberikan umpan balik konsekuensi atas setiap tindakan yang dipilih pengguna saat gempa terjadi.
+ */
 import React, { useState, useEffect } from 'react';
 import { EMERGENCY_MISSION_STEPS } from '../../data/emergencyMissionData';
 import { MissionStep, MissionChoice } from '../../types/games';
@@ -96,7 +103,7 @@ export const EmergencyMissionGame: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">
-                  Petualang Mitigasi SEISMORA
+                  Petualang Mitigasi EPICORA
                 </span>
                 <span className="text-xs font-black text-white">
                   Misi {currentStepIdx + 1} dari {EMERGENCY_MISSION_STEPS.length}

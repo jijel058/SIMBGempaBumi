@@ -1,3 +1,8 @@
+/**
+ * FILE: src/data/quizQuestions.ts
+ * FUNGSI: Bank soal kuis pilihan ganda (tingkat Mudah, Sedang, Sulit) beserta jawaban benar
+ *         dan pembahasan ilmiahnya untuk permainan Earthquake Quiz.
+ */
 import { QuizQuestion } from '../types/games';
 
 export const QUIZ_QUESTIONS: QuizQuestion[] = [

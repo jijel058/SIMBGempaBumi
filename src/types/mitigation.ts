@@ -1,3 +1,8 @@
+/**
+ * FILE: src/types/mitigation.ts
+ * FUNGSI: Definisi tipe data TypeScript untuk daftar periksa (checklist) mitigasi bencana
+ *         dan skenario simulasi latihan tanggap darurat.
+ */
 export interface MitigationItem {
   id: string;
   category: 'before' | 'during' | 'after';

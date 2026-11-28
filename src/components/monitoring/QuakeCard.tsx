@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/monitoring/QuakeCard.tsx
+ * FUNGSI: Komponen kartu satuan untuk menampilkan ringkasan satu peristiwa gempa bumi pada halaman Monitoring.
+ * ISI:
+ * - Menampilkan lencana magnitudo, label sumber (BMKG / USGS), label TERBARU, waktu relatif ("X menit/jam/hari yang lalu"),
+ *   nama lokasi/wilayah, kedalaman (km), koordinat GPS, dan status potensi tsunami.
+ */
 import React from 'react';
 import { Earthquake } from '../../types/earthquake';
 import { MagnitudeBadge } from '../common/MagnitudeBadge';

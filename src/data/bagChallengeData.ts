@@ -1,3 +1,8 @@
+/**
+ * FILE: src/data/bagChallengeData.ts
+ * FUNGSI: Menyimpan daftar barang-barang (air, makanan darurat, P3K, senter, peluit, barang pengecoh)
+ *         beserta bobot (kg) dan penjelasannya untuk game Emergency Bag Challenge.
+ */
 import { BagItem } from '../types/games';
 
 export const BAG_CHALLENGE_ITEMS: BagItem[] = [

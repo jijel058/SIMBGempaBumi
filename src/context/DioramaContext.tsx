@@ -1,3 +1,12 @@
+/**
+ * FILE: src/context/DioramaContext.tsx
+ * FUNGSI: React Context untuk mengatur interaksi latar belakang diorama pulau 3D dan sub-menu navigasi.
+ * ISI:
+ * - Menyimpan nilai skala magnitudo guncangan diorama pulau 3D (magnitude).
+ * - Menyimpan suasana waktu pencahayaan langit 3D: Siang ('day') atau Sore ('dusk').
+ * - Mengirim sinyal pemicu guncangan pulau (triggerQuake / quakeNonce).
+ * - Mengirim intent navigasi sub-menu dari Navbar (misal memilih mode Peta 2D/3D atau tab Simulasi 3D).
+ */
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
 export type TimeOfDay = 'day' | 'dusk';

@@ -1,3 +1,13 @@
+/**
+ * FILE: src/components/simulation3d/EarthGlobe3D.tsx
+ * FUNGSI: Visualisasi Bola Bumi 3D (NASA Blue Marble) interaktif menggunakan library Three.js / WebGL.
+ * ISI:
+ * - Membangun bola bumi 3D dengan tekstur satelit siang hari, tekstur timbul pegunungan (normal map),
+ *   pantulan kilau samudra (specular map), lapisan awan berputar, pendaran atmosfer, dan 950 bintang luar angkasa.
+ * - Mengonversi koordinat Latitude/Longitude gempa menjadi koordinat bola 3D (x, y, z) untuk menempelkan
+ *   pin episentrum dan cincin gelombang seismik yang berdenyut.
+ * - Menyediakan mode irisan lapisan dalam bumi (Kerak, Mantel, Inti Luar, Inti Dalam) serta kontrol putar/zoom mouse.
+ */
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { Earthquake } from '../../types/earthquake';

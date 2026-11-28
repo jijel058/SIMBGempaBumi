@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/layout/GlobalSearchModal.tsx
+ * FUNGSI: Jendela pop-up pencarian terpadu (Global Search) yang dapat dibuka dari Navbar atau pintasan Ctrl+K.
+ * ISI:
+ * - Mencari data gempa bumi (berdasarkan nama wilayah/lokasi/sumber), modul edukasi, dan panduan mitigasi secara instan.
+ * - Dilengkapi tombol panah kembali (ArrowLeft), tombol penutup ESC, serta klik area luar (backdrop) untuk menutup modal.
+ */
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Search, X, Activity, BookOpen, ShieldAlert, ArrowRight, ArrowLeft } from 'lucide-react';

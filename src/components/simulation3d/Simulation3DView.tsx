@@ -1,3 +1,12 @@
+/**
+ * FILE: src/components/simulation3d/Simulation3DView.tsx
+ * FUNGSI: Halaman induk untuk menu "Simulasi 3D".
+ * ISI:
+ * - Menyediakan 3 sub-tab simulasi interaktif:
+ *   1. Patahan Kota 3D (<DaylightCityRupture3D />)
+ *   2. Globe Seismik NASA (<EarthGlobe3D />)
+ *   3. Latihan Tanggap Darurat (<DisasterScenario3D />)
+ */
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useDiorama } from '../../context/DioramaContext';

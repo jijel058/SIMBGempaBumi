@@ -1,3 +1,13 @@
+/**
+ * FILE: src/components/home/HomeView.tsx
+ * FUNGSI: Menampilkan halaman utama ("Beranda") platform EPICORA.
+ * ISI:
+ * - Bagian Hero: Judul utama "Platform Edukasi Gempa & Informasi Gempa", tombol navigasi cepat,
+ *   serta panel kontrol Diorama Gempa Interaktif (sakelar Siang/Sore, slider skala magnitudo, dan tombol Guncang Pulau).
+ * - 5 Kartu Kategori Dampak & Skala Magnitudo Gempa (Ringan, Sedang, Waspada, Bahaya, Berbahaya).
+ * - Bagian Fitur Utama: Panduan penyelamatan 60 detik pertama (Drop, Cover, Hold On) dan Rute Evakuasi & Titik Kumpul.
+ * - Bagian Artikel & Jurnalisme Seismik serta 4 Kartu Akses Cepat Ekosistem EPICORA.
+ */
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useDiorama } from '../../context/DioramaContext';
@@ -542,7 +552,7 @@ export const HomeView: React.FC = () => {
       </section>
 
       {/* =========================================================================
-          5. AKSES PLATFORM SEISMORA: GLOBE 3D, PETA 2D, GAMES, & MITIGASI
+          5. AKSES PLATFORM EPICORA: GLOBE 3D, PETA 2D, GAMES, & MITIGASI
          ========================================================================= */}
       <section id="section-ecosystem" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 scroll-mt-28">
         <div className="text-center max-w-xl mx-auto space-y-1">
@@ -550,7 +560,7 @@ export const HomeView: React.FC = () => {
             EKOSISTEM DIGITAL LENGKAP
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-            Jelajahi Seluruh Fitur SEISMORA
+            Jelajahi Seluruh Fitur EPICORA
           </h2>
         </div>
 

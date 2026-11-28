@@ -1,3 +1,16 @@
+/**
+ * FILE: src/services/earthquakeApi.ts
+ * FUNGSI: Layanan utama pengambil, penggabung, dan pemfilter data gempa bumi dari 3 sumber:
+ *   1. Database MySQL XAMPP lokal (http://localhost/seismora/api_gempa.php?action=public)
+ *   2. API Resmi BMKG Open Data InaTEWS (autogempa.json, gempaterkini.json, gempadirasakan.json)
+ *   3. API Resmi USGS GeoJSON Feed (all_day, 4.5_week, significant_month)
+ * ISI:
+ * - calculateDistance(): Menghitung jarak (km) antara lokasi pengguna dan titik gempa dengan rumus Haversine.
+ * - mapUsgsFeature() & mapBmkgItem(): Menyeragamkan format data USGS dan BMKG ke interface Earthquake.
+ * - fetchEarthquakes(): Mengambil data, memfilter sesuai rentang waktu (24 Jam, 7 Hari, 30 Hari),
+ *   menyimpan cache ke localStorage selama 3 menit, dan memuat data cadangan jika offline.
+ * - computeStats(): Menghitung statistik jumlah gempa, magnitudo maksimum, dan rata-rata kedalaman.
+ */
 import { Earthquake, EarthquakeStats, TimeRangeFilter } from '../types/earthquake';
 import { FALLBACK_EARTHQUAKES } from '../data/fallbackEarthquakes';
 
@@ -104,9 +117,20 @@ function mapBmkgItem(item: any, isLatest = false): Earthquake {
   };
 }
 
-const CACHE_KEY = 'seismora_quakes_cache_v7';
-const CACHE_TIMESTAMP_KEY = 'seismora_quakes_cache_time_v7';
+const CACHE_KEY = 'epicora_quakes_cache_v8';
+const CACHE_TIMESTAMP_KEY = 'epicora_quakes_cache_time_v8';
 const CACHE_TTL_MS = 3 * 60 * 1000; // 3 minutes
+
+export function clearEarthquakeCache(): void {
+  try {
+    localStorage.removeItem(CACHE_TIMESTAMP_KEY);
+    localStorage.removeItem(`${CACHE_KEY}_24h`);
+    localStorage.removeItem(`${CACHE_KEY}_7d`);
+    localStorage.removeItem(`${CACHE_KEY}_30d`);
+  } catch {
+    // Ignore storage error
+  }
+}
 
 const TIME_RANGE_MAX_AGE_MS: Record<TimeRangeFilter, number> = {
   '24h': 24 * 60 * 60 * 1000,
@@ -141,17 +165,21 @@ export async function fetchEarthquakes(
   const collectedQuakes: Earthquake[] = [];
   let isLive = false;
   let fetchError = '';
+  let mysqlConnected = false;
+  const mysqlRecordIds = new Set<string>();
 
   // 0. Fetch Indonesian Earthquakes from XAMPP MySQL Database (seismora_db.gempa_indonesia) if XAMPP Apache/MySQL is active
   try {
-    const res = await fetch('http://localhost/seismora/api_gempa.php', {
-      signal: AbortSignal.timeout(1800)
+    const res = await fetch('http://localhost/seismora/api_gempa.php?action=public', {
+      signal: AbortSignal.timeout(2200)
     });
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data?.earthquakes) && data.earthquakes.length > 0) {
+      if (data?.status === 'success' && Array.isArray(data?.earthquakes)) {
+        mysqlConnected = true;
         data.earthquakes.forEach((q: Earthquake) => {
           collectedQuakes.push(q);
+          mysqlRecordIds.add(q.id);
         });
         isLive = true;
       }
@@ -266,17 +294,19 @@ export async function fetchEarthquakes(
     uniqueQuakes.push(q);
   }
 
-  // Ensure BMKG earthquakes and Indonesian Historical Database records (bmkg-db-*) are always present
+  // Ensure BMKG earthquakes and Indonesian Historical Database records (bmkg-db-*) are present when MySQL is offline
   let finalQuakes = uniqueQuakes;
-  FALLBACK_EARTHQUAKES.filter(fb => fb.id.startsWith('bmkg-db-')).forEach(fb => {
-    if (!seenIds.has(fb.externalId)) {
-      finalQuakes.push({ ...fb });
-      seenIds.add(fb.externalId);
-    }
-  });
+  if (!mysqlConnected) {
+    FALLBACK_EARTHQUAKES.filter(fb => fb.id.startsWith('bmkg-db-')).forEach(fb => {
+      if (!seenIds.has(fb.externalId)) {
+        finalQuakes.push({ ...fb });
+        seenIds.add(fb.externalId);
+      }
+    });
+  }
 
   const bmkgCount = finalQuakes.filter(q => q.source === 'BMKG').length;
-  if (bmkgCount < 10) {
+  if (!mysqlConnected && bmkgCount < 10) {
     FALLBACK_EARTHQUAKES.filter(fb => fb.source === 'BMKG').forEach(fb => {
       if (!seenIds.has(fb.externalId)) {
         finalQuakes.push({ ...fb });
@@ -288,17 +318,17 @@ export async function fetchEarthquakes(
   // If live returned empty or too few items overall, augment with remaining fallback data
   if (finalQuakes.length < 10) {
     FALLBACK_EARTHQUAKES.forEach(fb => {
-      if (!seenIds.has(fb.externalId)) {
+      if (!mysqlConnected && !seenIds.has(fb.externalId)) {
         finalQuakes.push({ ...fb });
         seenIds.add(fb.externalId);
       }
     });
   }
 
-  // Normalize BMKG timestamps relative to current clock & distribute accurately across 24h, 7d, and 30d windows
+  // Normalize external live BMKG timestamps relative to current clock (leave MySQL database records at their exact admin timestamps)
   const nowMs = Date.now();
   const bmkgItems = finalQuakes
-    .filter(q => q.source === 'BMKG')
+    .filter(q => q.source === 'BMKG' && !mysqlRecordIds.has(q.id))
     .sort((a, b) => b.time - a.time);
 
   if (bmkgItems.length > 0) {

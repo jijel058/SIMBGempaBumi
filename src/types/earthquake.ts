@@ -1,3 +1,8 @@
+/**
+ * FILE: src/types/earthquake.ts
+ * FUNGSI: Definisi tipe data TypeScript (Interface) untuk entitas gempa bumi, filter rentang waktu,
+ *         statistik kegempaan, dan titik koordinat lokasi GPS pengguna.
+ */
 export interface Earthquake {
   id: string;
   source: 'USGS' | 'BMKG' | 'EMSC';

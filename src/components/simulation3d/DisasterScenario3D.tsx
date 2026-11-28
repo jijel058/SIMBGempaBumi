@@ -1,3 +1,11 @@
+/**
+ * FILE: src/components/simulation3d/DisasterScenario3D.tsx
+ * FUNGSI: Komponen simulasi latihan tanggap darurat berbasis skenario waktu nyata (sub-tab "Latihan Tanggap Darurat").
+ * ISI:
+ * - Menyediakan 5 pilihan lokasi skenario: Di Dalam Rumah, Gedung Bertingkat Tinggi, Sekolah/Kampus, Luar Ruangan, dan Kendaraan.
+ * - Menguji kecepatan pengambilan keputusan pengguna dalam 3 fase guncangan dengan hitung mundur 12 detik per fase
+ *   dan menampilkan laporan evaluasi poin serta konsekuensi di akhir simulasi.
+ */
 import React, { useState, useEffect } from 'react';
 import { SIMULATION_SCENARIOS } from '../../data/simulationData';
 import { SimulationScenario } from '../../types/mitigation';

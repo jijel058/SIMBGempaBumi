@@ -1,3 +1,11 @@
+/**
+ * FILE: src/components/education/EducationView.tsx
+ * FUNGSI: Menampilkan halaman menu "Edukasi" (Pusat Pengetahuan & Literasi Gempa Bumi).
+ * ISI:
+ * - Daftar navigasi 8 Modul Pembelajaran (Modul A - H) dengan fitur penanda (Bookmark).
+ * - Visualisasi diagram interaktif (Hiposentrum vs Episentrum, Gelombang P & S, Likuefaksi, Lapisan Bumi, Jenis Sesar, Skala MMI).
+ * - Bagian Artikel & Kajian Ilmiah Kegempaan lengkap dengan filter kategori dan modal pembaca artikel.
+ */
 import React, { useState } from 'react';
 import { EDUCATION_MODULES, EducationModule } from '../../data/educationData';
 import { EDUCATIONAL_ARTICLES, EducationalArticle } from '../../data/articleData';

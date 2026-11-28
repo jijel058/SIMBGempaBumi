@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/layout/Footer.tsx
+ * FUNGSI: Komponen kaki halaman (Footer) yang tampil di bagian paling bawah seluruh halaman EPICORA.
+ * ISI:
+ * - Identitas brand EPICORA, tautan navigasi cepat (termasuk Portal Admin Dashboard), daftar nomor telepon darurat,
+ *   tautan atribusi sumber data resmi (USGS, BMKG Open Data, BNPB, OpenStreetMap), serta kotak disclaimer ilmiah.
+ */
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Activity, ShieldCheck, ExternalLink, Heart, Radio, PhoneCall } from 'lucide-react';
@@ -16,7 +23,7 @@ export const Footer: React.FC = () => {
                 <Activity className="w-5 h-5" />
               </div>
               <span className="font-extrabold text-xl text-slate-900 dark:text-white tracking-tight">
-                SEISMO<span className="text-emerald-500">RA</span>
+                EPIC<span className="text-emerald-500">ORA</span>
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -72,6 +79,14 @@ export const Footer: React.FC = () => {
                   className="hover:text-emerald-500 transition"
                 >
                   {language === 'id' ? 'Panduan Mitigasi Lengkap' : 'Disaster Mitigation Guide'}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveTab('admin')}
+                  className="hover:text-emerald-500 transition font-semibold text-emerald-600 dark:text-emerald-400"
+                >
+                  {language === 'id' ? 'Portal Admin Dashboard' : 'Admin Dashboard Portal'}
                 </button>
               </li>
             </ul>
@@ -172,7 +187,7 @@ export const Footer: React.FC = () => {
               <span className="font-bold text-slate-900 dark:text-emerald-300">
                 DISCLAIMER & INTEGRITAS ILMIAH:
               </span>{' '}
-              Website SEISMORA adalah platform media edukasi dan pemantauan gempa bumi. Informasi gempa bumi yang disajikan bersumber dari rekaman sensor seismometer BMKG dan USGS setelah gelombang seismik terjadi. Secara ilmiah, hingga saat ini{' '}
+              Website EPICORA adalah platform media edukasi dan pemantauan gempa bumi. Informasi gempa bumi yang disajikan bersumber dari rekaman sensor seismometer BMKG dan USGS setelah gelombang seismik terjadi. Secara ilmiah, hingga saat ini{' '}
               <strong className="text-slate-800 dark:text-slate-200">TIDAK ADA teknologi yang mampu memprediksi waktu pasti terjadinya gempa bumi</strong>. Platform ini bukan pengganti sistem peringatan dini resmi negara.
             </div>
           </div>
@@ -180,7 +195,7 @@ export const Footer: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 border-t border-slate-200 dark:border-emerald-950/80 pt-6">
           <p>
-            © {new Date().getFullYear()} SEISMORA Platform. All rights reserved. Built for Global Disaster Preparedness.
+            © {new Date().getFullYear()} EPICORA Platform. All rights reserved. Built for Global Disaster Preparedness.
           </p>
           <p className="flex items-center gap-1 mt-2 sm:mt-0">
             <span>Designed with</span>

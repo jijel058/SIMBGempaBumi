@@ -1,9 +1,9 @@
 -- ============================================================================
--- DATABASE MYSQL XAMPP: SEISMORA (DATA GEMPA BUMI INDONESIA - BMKG)
--- Cara Import di phpMyAdmin (http://localhost/phpmyadmin):
--- 1. Buka http://localhost/phpmyadmin di browser setelah menyalakan MySQL di XAMPP
--- 2. Klik menu "Import" di bagian atas
--- 3. Pilih file "seismora_db.sql" ini lalu klik tombol "Import" / "Go"
+-- DATABASE MYSQL XAMPP: EPICORA (DATA GEMPA BUMI INDONESIA & ADMIN AUTH)
+-- Database: seismora_db
+-- Tabel 1 : gempa_indonesia (Data gempa bumi Indonesia)
+-- Tabel 2 : admins (Akun administrator dengan password hash bcrypt)
+-- Tabel 3 : admin_sessions (Session login & token CSRF admin)
 -- ============================================================================
 
 CREATE DATABASE IF NOT EXISTS `seismora_db`
@@ -12,9 +12,8 @@ CREATE DATABASE IF NOT EXISTS `seismora_db`
 
 USE `seismora_db`;
 
-DROP TABLE IF EXISTS `gempa_indonesia`;
-
-CREATE TABLE `gempa_indonesia` (
+-- 1. Tabel Data Gempa Bumi Indonesia (Tanpa DROP TABLE agar data tidak terhapus)
+CREATE TABLE IF NOT EXISTS `gempa_indonesia` (
   `id` VARCHAR(64) NOT NULL,
   `external_id` VARCHAR(64) NOT NULL,
   `source` VARCHAR(16) NOT NULL DEFAULT 'BMKG',
@@ -23,7 +22,7 @@ CREATE TABLE `gempa_indonesia` (
   `latitude` DECIMAL(8,4) NOT NULL,
   `longitude` DECIMAL(8,4) NOT NULL,
   `depth` INT NOT NULL COMMENT 'Kedalaman dalam km',
-  `hours_ago` INT NOT NULL DEFAULT 1 COMMENT 'Offset jam relatif agar tampil di filter 24 Jam, 7 Hari, dan 30 Hari',
+  `hours_ago` INT NOT NULL DEFAULT 1 COMMENT 'Offset jam relatif untuk filter rentang waktu',
   `tanggal_kejadian` VARCHAR(64) NOT NULL,
   `tsunami` TINYINT(1) NOT NULL DEFAULT 0,
   `status` VARCHAR(32) NOT NULL DEFAULT 'CONFIRMED',
@@ -34,17 +33,46 @@ CREATE TABLE `gempa_indonesia` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ============================================================================
--- DATA CONTOH GEMPA BUMI YANG PERNAH TERJADI DI INDONESIA (TERCATAT BMKG)
--- Mencakup rentang tampilan 24 Jam (< 24 jam), 7 Hari (24 - 168 jam), & 30 Hari (169 - 720 jam)
--- ============================================================================
+-- 2. Tabel Akun Admin (Password disimpan dalam bentuk Bcrypt Hash)
+-- Default Login:
+-- Username : admin
+-- Email    : admin@epicora.id
+-- Password : admin123
+CREATE TABLE IF NOT EXISTS `admins` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(64) NOT NULL,
+  `email` VARCHAR(128) NOT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `full_name` VARCHAR(128) NOT NULL,
+  `role` VARCHAR(32) NOT NULL DEFAULT 'Super Admin',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_admin_username` (`username`),
+  UNIQUE KEY `uniq_admin_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `gempa_indonesia` (
+-- 3. Tabel Session & CSRF Token Admin
+CREATE TABLE IF NOT EXISTS `admin_sessions` (
+  `session_token` VARCHAR(128) NOT NULL,
+  `admin_id` INT NOT NULL,
+  `csrf_token` VARCHAR(128) NOT NULL,
+  `expires_at` BIGINT NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`session_token`),
+  KEY `idx_admin_sessions_admin_id` (`admin_id`),
+  CONSTRAINT `fk_admin_sessions_admin` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Seed Akun Admin Default (INSERT IGNORE agar tidak menimpa data yang sudah ada)
+INSERT IGNORE INTO `admins` (`id`, `username`, `email`, `password_hash`, `full_name`, `role`) VALUES
+(1, 'admin', 'admin@epicora.id', '$2y$10$ngnQN8Y1YsInnlNVNUBSsuRe8yv07o74HYBJwyFz1QUCzcqMjGVYO', 'Administrator EPICORA', 'Super Admin');
+
+-- Seed Data Awal Gempa Bumi Indonesia (INSERT IGNORE agar tidak mereset data yang sudah diedit/ditambah)
+INSERT IGNORE INTO `gempa_indonesia` (
   `id`, `external_id`, `source`, `magnitude`, `location`,
   `latitude`, `longitude`, `depth`, `hours_ago`, `tanggal_kejadian`,
   `tsunami`, `status`, `alert`, `felt`, `dirasakan`, `url`
 ) VALUES
--- Kategori 1: Tampil di Filter 24 Jam, 7 Hari, & 30 Hari (hours_ago < 24)
 ('bmkg-db-01', 'BMKG-ID-20221121-CIANJUR', 'BMKG', 5.6, '10 km BaratDaya KAB-CIANJUR-JABAR (Sesar Cugenang)', -6.8400, 107.0500, 10, 1, '21 Nov 2022', 0, 'CONFIRMED', 'orange', 4200, 'V-VI Cianjur, IV-V Garut, IV Sukabumi, III Cimahi, III Bogor, II-III Jakarta', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-02', 'BMKG-ID-20240322-BAWEAN', 'BMKG', 6.5, '130 km TimurLaut TUBAN-JATIM (Laut Jawa - Pulau Bawean)', -5.7600, 112.3300, 10, 2, '22 Mar 2024', 0, 'CONFIRMED', 'orange', 3500, 'V-VI Bawean, IV-V Tuban, IV Surabaya, III-IV Gresik, III Semarang', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-03', 'BMKG-ID-20240427-GARUT', 'BMKG', 6.2, '151 km BaratDaya KAB-GARUT-JABAR', -8.4200, 107.2600, 70, 4, '27 Apr 2024', 0, 'CONFIRMED', 'orange', 2890, 'IV Garut, IV Sukabumi, III-IV Bandung, III Tasikmalaya, III Tangerang', 'https://data.bmkg.go.id/gempabumi/'),
@@ -54,8 +82,6 @@ INSERT INTO `gempa_indonesia` (
 ('bmkg-db-07', 'BMKG-ID-20230209-JAYAPURA', 'BMKG', 5.4, '9 km BaratDaya KOTA-JAYAPURA-PAPUA', -2.6000, 140.6600, 10, 15, '09 Feb 2023', 0, 'CONFIRMED', 'yellow', 1980, 'V Kota Jayapura, III-IV Kabupaten Jayapura, III Keerom', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-08', 'BMKG-ID-20240918-BANDUNG', 'BMKG', 5.0, '24 km Tenggara KAB-BANDUNG-JABAR (Kertasari - Sesar Garsela)', -7.1900, 107.6700, 10, 18, '18 Sep 2024', 0, 'CONFIRMED', 'yellow', 2100, 'IV-V Kertasari, IV Majalaya, III-IV Garut, III Banjaran, II-III Kota Bandung', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-09', 'BMKG-ID-20240707-BATANG', 'BMKG', 4.4, '5 km TimurLaut BATANG-JATENG', -6.8700, 109.7500, 6, 21, '07 Jul 2024', 0, 'CONFIRMED', 'yellow', 1200, 'IV Batang, III-IV Pekalongan, II Kendal', 'https://data.bmkg.go.id/gempabumi/'),
-
--- Kategori 2: Tampil di Filter 7 Hari & 30 Hari (24 <= hours_ago <= 168)
 ('bmkg-db-10', 'BMKG-ID-20220225-PASAMAN', 'BMKG', 6.2, '17 km TimurLaut PASAMANBARAT-SUMBAR (Sesar Talamau)', 0.1500, 99.9800, 10, 36, '25 Feb 2022', 0, 'CONFIRMED', 'orange', 3400, 'V-VI Pasaman Barat, V Pasaman, IV Agam, III-IV Bukittinggi, III Padang', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-11', 'BMKG-ID-20210115-MAJENE', 'BMKG', 6.2, '6 km TimurLaut MAJENE-SULBAR', -2.9800, 118.9400, 10, 52, '15 Jan 2021', 0, 'CONFIRMED', 'orange', 2950, 'V-VI Majene, V Mamuju, IV Polewali Mandar, III Parepare, II Makassar', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-12', 'BMKG-ID-20210410-MALANG', 'BMKG', 6.1, '96 km Selatan KEPANJEN-MALANG-JATIM', -8.8300, 112.5000, 80, 74, '10 Apr 2021', 0, 'CONFIRMED', 'orange', 3800, 'V Malang, IV-V Lumajang, IV Blitar, III-IV Kediri, III Surabaya, III Yogyakarta', 'https://data.bmkg.go.id/gempabumi/'),
@@ -64,8 +90,6 @@ INSERT INTO `gempa_indonesia` (
 ('bmkg-db-15', 'BMKG-ID-20230829-TANAHBUMBU', 'BMKG', 7.1, '180 km Tenggara TANAHBUMBU-KALSEL (Laut Jawa)', -6.9400, 116.5700, 525, 134, '29 Agu 2023', 0, 'CONFIRMED', 'orange', 2400, 'IV Kuta, IV Gianyar, IV Denpasar, III-IV Mataram, III Lombok Tengah, III Makassar', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-16', 'BMKG-ID-20231001-SUKABUMI', 'BMKG', 5.4, '30 km Tenggara KAB-SUKABUMI-JABAR', -7.2600, 106.6000, 88, 150, '01 Okt 2023', 0, 'CONFIRMED', 'yellow', 1520, 'IV Sukabumi, III Cianjur, III Sawarna, III Garut, II-III Bandung', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-17', 'BMKG-ID-20231102-KUPANG', 'BMKG', 6.3, '15 km Tenggara KUPANG-NTT', -10.2600, 123.7200, 10, 162, '02 Nov 2023', 0, 'CONFIRMED', 'orange', 1840, 'V-VI Kupang, IV-V Kabupaten Timor Tengah Selatan, III Rote Ndao', 'https://data.bmkg.go.id/gempabumi/'),
-
--- Kategori 3: Gempa Historis Besar Indonesia — Tampil di Filter 30 Hari (169 <= hours_ago <= 700)
 ('bmkg-db-18', 'BMKG-ID-20180928-PALU', 'BMKG', 7.4, '26 km Utara DONGGALA-SULTENG (Sesar Palu-Koro)', -0.1800, 119.8500, 10, 210, '28 Sep 2018', 1, 'CONFIRMED', 'red', 9500, 'VII-VIII Palu, VII Donggala, VI-VII Sigi, V Parigi Moutong, IV Poso', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-19', 'BMKG-ID-20180805-LOMBOK', 'BMKG', 7.0, '18 km BaratLaut LOMBOKTIMUR-NTB (Flores Back-Arc Thrust)', -8.3500, 116.4700, 15, 260, '05 Agu 2018', 1, 'CONFIRMED', 'red', 8200, 'VII Lombok Utara, VI-VII Lombok Timur, VI Mataram, V Denpasar, IV Sumbawa', 'https://data.bmkg.go.id/gempabumi/'),
 ('bmkg-db-20', 'BMKG-ID-20060527-YOGYAKARTA', 'BMKG', 6.3, '25 km Selatan YOGYAKARTA-DIY (Sesar Opak - Bantul)', -8.0300, 110.3200, 12, 320, '27 Mei 2006', 0, 'CONFIRMED', 'red', 12000, 'VII-VIII Bantul, VII Yogyakarta, VI-VII Klaten, V Sleman, V Gunungkidul', 'https://data.bmkg.go.id/gempabumi/'),

@@ -1,3 +1,8 @@
+/**
+ * FILE: src/types/user.ts
+ * FUNGSI: Definisi tipe data TypeScript untuk profil pengguna, skor tertinggi permainan,
+ *         pengaturan notifikasi, dan lencana penghargaan (Badge).
+ */
 export interface UserProfile {
   id: string;
   name: string;

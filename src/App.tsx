@@ -1,3 +1,13 @@
+/**
+ * FILE: src/App.tsx
+ * FUNGSI: Komponen kerangka induk (Root Component) yang merakit tata letak utama website EPICORA.
+ * ISI:
+ * - Menampilkan latar belakang diorama pulau 3D (<EarthquakeDioramaBackground />).
+ * - Menampilkan bar navigasi atas (<Navbar />) dan kaki halaman (<Footer />).
+ * - Mengatur perpindahan halaman aktif (activeTab): Beranda, Monitoring, Peta Dunia, Edukasi,
+ *   Mitigasi, Simulasi 3D, Games, Tentang, serta Halaman Login & Dashboard Admin.
+ * - Menampilkan modal global darurat SOS (<EmergencyModal />) dan pencarian (<GlobalSearchModal />).
+ */
 import React from 'react';
 import { useApp } from './context/AppContext';
 import { Navbar } from './components/layout/Navbar';
@@ -14,6 +24,7 @@ import { MitigationView } from './components/mitigation/MitigationView';
 import { Simulation3DView } from './components/simulation3d/Simulation3DView';
 import { GamesHubView } from './components/games/GamesHubView';
 import { AboutView } from './components/about/AboutView';
+import { AdminView } from './components/admin/AdminView';
 
 export const App: React.FC = () => {
   const { activeTab } = useApp();
@@ -41,6 +52,7 @@ export const App: React.FC = () => {
               {activeTab === 'simulation' && <Simulation3DView />}
               {activeTab === 'games' && <GamesHubView />}
               {activeTab === 'about' && <AboutView />}
+              {activeTab === 'admin' && <AdminView />}
             </div>
           </div>
         )}

@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/layout/EmergencyModal.tsx
+ * FUNGSI: Jendela pop-up darurat (SOS Modal) yang muncul ketika tombol merah "SOS" di Navbar diklik.
+ * ISI:
+ * - Daftar nomor panggilan darurat resmi di Indonesia (BMKG 196, BNPB 117, Basarnas 115, Ambulans 118/119, Damkar 113, Polisi 110).
+ * - Panduan cepat langkah penyelamatan diri saat terjadi keadaan darurat gempa bumi.
+ */
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { AlertOctagon, Phone, X, ShieldAlert, Siren } from 'lucide-react';

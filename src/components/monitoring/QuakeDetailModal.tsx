@@ -1,3 +1,11 @@
+/**
+ * FILE: src/components/monitoring/QuakeDetailModal.tsx
+ * FUNGSI: Jendela pop-up (modal) rincian lengkap gempa bumi yang dirender langsung ke document.body (React Portal).
+ * ISI:
+ * - Menampilkan status potensi tsunami, kedalaman, waktu terdeteksi, koordinat lintang/bujur,
+ *   laporan skala intensitas dirasakan (MMI BMKG), jarak dari lokasi pengguna, dan gambar peta guncangan (BMKG Shakemap).
+ * - Menyediakan tombol Bagikan Info dan tautan menuju halaman sumber resmi API.
+ */
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { Earthquake } from '../../types/earthquake';
@@ -24,13 +32,13 @@ export const QuakeDetailModal: React.FC<Props> = ({ quake, onClose }) => {
     audio.playClick();
     if (navigator.share) {
       navigator.share({
-        title: `Laporan Gempa M ${quake.magnitude} - SEISMORA`,
+        title: `Laporan Gempa M ${quake.magnitude} - EPICORA`,
         text: `Gempa bumi M ${quake.magnitude} terjadi di ${quake.location} pada kedalaman ${quake.depth} km.`,
         url: window.location.href
       });
     } else {
       navigator.clipboard.writeText(
-        `[SEISMORA Alert] Gempa M ${quake.magnitude} - ${quake.location} (Kedalaman ${quake.depth} km) ${new Date(quake.time).toLocaleString()}`
+        `[EPICORA Alert] Gempa M ${quake.magnitude} - ${quake.location} (Kedalaman ${quake.depth} km) ${new Date(quake.time).toLocaleString()}`
       );
       alert('Tautan & rincian gempa disalin ke clipboard!');
     }

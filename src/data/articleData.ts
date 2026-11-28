@@ -1,3 +1,8 @@
+/**
+ * FILE: src/data/articleData.ts
+ * FUNGSI: Menyimpan kumpulan artikel ilmiah dan panduan literasi gempa bumi yang ditampilkan
+ *         di halaman Beranda, halaman Edukasi, serta dibaca melalui komponen ArticleModal.
+ */
 export interface EducationalArticle {
   id: string;
   category: 'Mitigasi' | 'Teknologi' | 'Geologi' | 'Evakuasi' | 'Kesiapsiagaan';
@@ -29,7 +34,7 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
     category: 'Geologi',
     title: 'Mengapa Indonesia Terus Berguncang? Menyingkap Rahasia Cincin Api & Zona Megathrust',
     excerpt: 'Indonesia terletak di pertemuan 4 lempeng tektonik aktif dunia. Pahami mengapa tanah air kita kaya akan energi seismik dan bagaimana kita beradaptasi hidup damai dengannya.',
-    author: 'Tim Geologi SEISMORA & BMKG',
+    author: 'Tim Geologi EPICORA & BMKG',
     source: 'Pusat Seismologi Teknik BMKG',
     readTime: '6 menit baca',
     date: '11 November 2026',
@@ -70,7 +75,7 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
     category: 'Mitigasi',
     title: 'Drop, Cover, Hold On: Langkah Emas 60 Detik Pertama Menyelamatkan Diri Saat Gempa',
     excerpt: 'Jangan panik berlari keluar gedung saat guncangan masih berlangsung. Pelajari teknik bertahan hidup yang diakui secara internasional oleh FEMA, USGS, dan BNPB.',
-    author: 'Instruktur Tanggap Darurat SEISMORA',
+    author: 'Instruktur Tanggap Darurat EPICORA',
     source: 'BNPB & USGS Earthquake Hazards Program',
     readTime: '5 menit baca',
     date: '10 November 2026',
@@ -110,7 +115,7 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
     category: 'Kesiapsiagaan',
     title: 'Anatomi Tas Siaga Bencana (72-Hour Survival Grab Bag): Apa Saja yang Wajib Dimiliki?',
     excerpt: '72 jam pertama pascabencana adalah periode krusial sebelum bantuan logistik menjangkau lokasi Anda. Pastikan setiap rumah tangga memiliki tas darurat siap bawa.',
-    author: 'Tim Logistik Kemanusiaan SEISMORA',
+    author: 'Tim Logistik Kemanusiaan EPICORA',
     source: 'Pedoman Siaga Bencana BNPB 2026',
     readTime: '7 menit baca',
     date: '9 November 2026',
@@ -153,7 +158,7 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
     category: 'Teknologi',
     title: 'Bagaimana Sistem Deteksi Dini Bekerja? Membedah Keajaiban Gelombang P-Wave & S-Wave',
     excerpt: 'Bagaimana BMKG dan sensor seismik global dapat membunyikan sirine peringatan sebelum tanah berguncang keras? Pahami hukum fisika di balik kecepatan rambat gelombang bumi.',
-    author: 'Divisi Instrumentasi & Sensor SEISMORA',
+    author: 'Divisi Instrumentasi & Sensor EPICORA',
     source: 'Japan Meteorological Agency (JMA) & BMKG Inatews',
     readTime: '6 menit baca',
     date: '8 November 2026',
@@ -194,7 +199,7 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
     category: 'Evakuasi',
     title: 'Navigasi Zona Aman: Cara Menentukan Rute Evakuasi & Menghindari Titik Runtuhan Kota',
     excerpt: 'Evakuasi bukan sekadar berlari keluar pintu. Ketahui bahaya tak kasat mata di jalanan kota—kabel listrik putus, jembatan retak, dinding fasad kaca—dan pilih titik kumpul aman.',
-    author: 'Perencana Tata Ruang Bencana SEISMORA',
+    author: 'Perencana Tata Ruang Bencana EPICORA',
     source: 'FEMA Safe Assembly Guidelines & BPBD',
     readTime: '5 menit baca',
     date: '7 November 2026',
@@ -232,7 +237,7 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
     category: 'Geologi',
     title: 'Mengenal Fenomena Likuefaksi: Ketika Tanah Padat Berubah Menjadi Lumpur Saat Gempa',
     excerpt: 'Pelajari mengapa tanah berpasir jenuh air dapat kehilangan daya dukungnya secara tiba-tiba saat diguncang gempa besar dan bagaimana mengenali zona rawannya.',
-    author: 'Pusat Studi Geoteknik SEISMORA',
+    author: 'Pusat Studi Geoteknik EPICORA',
     source: 'Kementerian ESDM - Badan Geologi & BMKG',
     readTime: '6 menit baca',
     date: '6 November 2026',
@@ -265,7 +270,7 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
     category: 'Mitigasi',
     title: 'Panduan Membangun Rumah Tahan Gempa Sesuai Standar SNI: Kunci Keselamatan Keluarga',
     excerpt: 'Bukan gempa yang melukai manusia, melainkan bangunan yang gagal bertahan. Simak 5 elemen struktur wajib agar rumah tinggal mampu meredam guncangan seismik.',
-    author: 'Tim Rekayasa Struktur SEISMORA',
+    author: 'Tim Rekayasa Struktur EPICORA',
     source: 'Kementerian PUPR & SNI 1726',
     readTime: '7 menit baca',
     date: '5 November 2026',
@@ -298,7 +303,7 @@ export const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
     category: 'Evakuasi',
     title: 'Mitigasi Tsunami Pesisir: Mengenali Tanda Alam 20-20-20 Sebelum Gelombang Tiba',
     excerpt: 'Di pesisir Indonesia yang berhadapan dekat dengan zona subduksi, gelombang tsunami dapat tiba dalam waktu kurang dari 20 menit. Pahami rumus penyelamatan 20-20-20.',
-    author: 'Tim Peringatan Dini Pesisir SEISMORA',
+    author: 'Tim Peringatan Dini Pesisir EPICORA',
     source: 'UNESCO-IOC Tsunami Ready & BMKG',
     readTime: '5 menit baca',
     date: '4 November 2026',

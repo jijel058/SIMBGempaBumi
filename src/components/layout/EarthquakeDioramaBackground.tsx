@@ -1,3 +1,12 @@
+/**
+ * FILE: src/components/layout/EarthquakeDioramaBackground.tsx
+ * FUNGSI: Latar belakang kanvas 3D WebGL (Three.js) berupa diorama pulau terapung interaktif.
+ * ISI:
+ * - Membangun pulau 3D prosedural lengkap dengan pepohonan cemara, tenda perkemahan, api unggun berasap,
+ *   pos pantau seismograf, bendera evakuasi, kolam air beriak, dan celah retakan patahan tanah.
+ * - Mengatur transisi pencahayaan langit antara mode Siang ('day') dan Sore ('dusk').
+ * - Menjalankan animasi getaran gempa pada pulau, pohon, tenda, debu rekahan, dan cincin gelombang seismik.
+ */
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useApp } from '../../context/AppContext';

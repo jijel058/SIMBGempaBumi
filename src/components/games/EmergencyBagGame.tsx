@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/games/EmergencyBagGame.tsx
+ * FUNGSI: Komponen permainan edukasi "Emergency Bag Challenge" (Menyusun Tas Siaga Bencana 72 Jam).
+ * ISI:
+ * - Melatih pengguna memilih barang-barang darurat esensial dengan batas kapasitas berat maksimal 9.0 kg.
+ * - Menghitung skor ketepatan pemilihan barang, memberikan evaluasi edukatif, serta menambahkan XP & lencana.
+ */
 import React, { useState } from 'react';
 import { BAG_CHALLENGE_ITEMS } from '../../data/bagChallengeData';
 import { BagItem } from '../../types/games';

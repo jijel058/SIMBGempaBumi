@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/education/ArticleModal.tsx
+ * FUNGSI: Jendela pop-up (modal) pembaca artikel edukasi kegempaan yang dirender ke document.body (React Portal).
+ * ISI:
+ * - Menampilkan kategori, estimasi waktu baca, judul artikel, penulis, tanggal publikasi, sumber resmi,
+ *   isi paragraf per bagian, poin-poin sorotan (highlights), dan kotak tips keselamatan.
+ */
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { EducationalArticle } from '../../data/articleData';
@@ -133,7 +140,7 @@ export const ArticleModal: React.FC<Props> = ({ article, onClose }) => {
         {/* Footer Actions */}
         <div className="sticky bottom-0 z-20 px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
           <span className="text-xs text-slate-500 font-medium">
-            SEISMORA Earthquake Educational Series
+            EPICORA Earthquake Educational Series
           </span>
           <button
             onClick={() => {

@@ -1,3 +1,11 @@
+/**
+ * FILE: src/components/games/GamesHubView.tsx
+ * FUNGSI: Halaman induk menu "Games" (Pusat Petualangan & Game Mitigasi Gempa EPICORA).
+ * ISI:
+ * - Menampilkan kartu profil pemain (Level Survivor, edit nama pemain, total bintang, dan akumulasi XP).
+ * - Menyediakan tab pemilih 5 permainan edukasi: Survival Mission, Find the Safe Zone, Emergency Bag, Quiz, dan Tectonic Puzzle.
+ * - Menampilkan daftar koleksi Lencana Prestasi Kesiapsiagaan (Badges) yang sudah terbuka.
+ */
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { QuizGame } from './QuizGame';
@@ -100,7 +108,7 @@ export const GamesHubView: React.FC = () => {
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>SEISMORA Disaster Adventure Arena</span>
+              <span>EPICORA Disaster Adventure Arena</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight">
               Pusat Petualangan & Game Mitigasi Gempa

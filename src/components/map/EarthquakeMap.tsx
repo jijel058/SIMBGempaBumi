@@ -1,3 +1,12 @@
+/**
+ * FILE: src/components/map/EarthquakeMap.tsx
+ * FUNGSI: Komponen Peta Geografis Interaktif 2D menggunakan library Leaflet.js dan citra satelit Esri ArcGIS.
+ * ISI:
+ * - Menampilkan basemap Satellite View (Esri World Imagery) dan Terrain View (Esri World Topo Map).
+ * - Menggambar garis batas lempeng tektonik & zona subduksi (TECTONIC_PLATES).
+ * - Menggambar titik lingkaran episentrum gempa bumi sesuai magnitudo beserta pop-up detail & tombol "VIEW ON 3D GLOBE".
+ * - Menyediakan fitur deteksi lokasi GPS pengguna ("Di Sekitar Saya") dan legenda magnitudo.
+ */
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';

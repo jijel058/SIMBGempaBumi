@@ -1,3 +1,9 @@
+/**
+ * FILE: src/data/fallbackEarthquakes.ts
+ * FUNGSI: Dataset cadangan (fallback) gempa bumi BMKG Indonesia & USGS Global.
+ *         Digunakan secara otomatis apabila perangkat pengguna sedang offline atau server MySQL XAMPP
+ *         belum dinyalakan, sehingga peta, globe 3D, dan halaman monitoring tidak pernah kosong.
+ */
 import { Earthquake } from '../types/earthquake';
 
 // Rich fallback dataset of recent significant global & BMKG earthquakes

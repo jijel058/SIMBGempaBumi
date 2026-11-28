@@ -1,3 +1,9 @@
+/**
+ * FILE: src/data/tectonicPlatesGeoJSON.ts
+ * FUNGSI: Menyimpan koordinat geografis garis batas lempeng tektonik utama (Cincin Api Pasifik,
+ *         Zona Subduksi Sunda/Megathrust Indonesia, Lempeng Australia, Sesar Palu-Koro & Semangko)
+ *         untuk digambar di atas Peta Satelit 2D (Leaflet) dan Globe 3D.
+ */
 // Tectonic plate boundaries and Ring of Fire coordinates for Leaflet and 3D globe visualization
 export interface PlateFeature {
   name: string;

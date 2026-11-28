@@ -1,3 +1,8 @@
+/**
+ * FILE: src/data/mitigationData.ts
+ * FUNGSI: Menyimpan daftar poin checklist kesiapsiagaan bencana untuk 3 fase:
+ *         Sebelum Gempa (before), Saat Gempa (during), dan Setelah Gempa (after).
+ */
 import { MitigationItem } from '../types/mitigation';
 
 export const MITIGATION_CHECKLIST_DATA: MitigationItem[] = [

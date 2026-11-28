@@ -1,3 +1,8 @@
+/**
+ * FILE: src/data/simulationData.ts
+ * FUNGSI: Menyimpan 5 skenario latihan tanggap darurat (di Rumah, Gedung Tinggi, Sekolah/Kampus,
+ *         Luar Ruangan, dan Kendaraan) yang digunakan pada komponen DisasterScenario3D.
+ */
 import { SimulationScenario } from '../types/mitigation';
 
 export const SIMULATION_SCENARIOS: SimulationScenario[] = [

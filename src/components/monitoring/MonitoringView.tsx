@@ -1,3 +1,12 @@
+/**
+ * FILE: src/components/monitoring/MonitoringView.tsx
+ * FUNGSI: Menampilkan halaman menu "Monitoring" untuk memantau daftar gempa bumi secara real-time.
+ * ISI:
+ * - 4 Kartu Statistik Cepat (Total Gempa sesuai filter waktu, Magnitudo Terbesar, Rata-rata Kedalaman, Gempa Signifikan).
+ * - Panel kontrol pencarian wilayah, filter rentang waktu (24 Jam, 7 Hari, 30 Hari), urutan data,
+ *   filter magnitudo minimum, serta filter sumber instansi (Semua Sumber, BMKG, USGS).
+ * - Grid daftar kartu gempa (<QuakeCard />) dan jendela detail (<QuakeDetailModal />).
+ */
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { QuakeCard } from './QuakeCard';

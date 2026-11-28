@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/games/TectonicPuzzleGame.tsx
+ * FUNGSI: Komponen permainan "Plate Tectonic Puzzle" (Teka-teki mencocokkan lempeng tektonik & zona subduksi).
+ * ISI:
+ * - Melatih pemahaman pengguna tentang posisi Lempeng Indo-Australia, Lempeng Eurasia, Lempeng Pasifik,
+ *   dan Sesar Palu-Koro yang membentuk tatanan tektonik kepulauan Indonesia.
+ */
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { audio } from '../../services/audioService';

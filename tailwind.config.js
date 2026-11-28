@@ -1,4 +1,11 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * FILE: tailwind.config.js
+ * FUNGSI: Konfigurasi tema desain Tailwind CSS untuk platform EPICORA.
+ * ISI:
+ * - Mengatur palet warna khusus (emerald/seismo, sage, warna latar gelap earth-dark/surface/card).
+ * - Mengatur jenis font utama (Plus Jakarta Sans & JetBrains Mono) serta animasi gelombang seismik.
+ * @type {import('tailwindcss').Config}
+ */
 export default {
   content: [
     "./index.html",

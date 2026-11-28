@@ -1,3 +1,12 @@
+/**
+ * FILE: vite.config.ts
+ * FUNGSI: Konfigurasi server pengembangan lokal (Vite) dan pengaturan bundling produksi.
+ * ISI:
+ * - Menjalankan server pengembangan di port 5173.
+ * - Menyediakan proxy '/api/bmkg' ke https://data.bmkg.go.id dan '/api/usgs' ke https://earthquake.usgs.gov
+ *   untuk menghindari pemblokiran CORS oleh browser.
+ * - Memisahkan bundle library besar (Three.js, Leaflet, jsPDF) menjadi chunk terpisah agar halaman dimuat cepat.
+ */
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 

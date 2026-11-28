@@ -1,3 +1,11 @@
+/**
+ * FILE: src/components/mitigation/MitigationView.tsx
+ * FUNGSI: Menampilkan halaman menu "Mitigasi" (Panduan Kesiapsiagaan & Daftar Periksa Mitigasi Gempa).
+ * ISI:
+ * - Tab panduan keselamatan 3 tahap: Sebelum Gempa (Prabencana), Saat Gempa (Tanggap Darurat), dan Setelah Gempa (Pascabencana).
+ * - Daftar checklist interaktif yang menyimpan progres kesiapsiagaan pengguna dan memberikan XP.
+ * - Tombol untuk men-download PDF Buku Panduan Mitigasi Resmi EPICORA (generateMitigationGuidePDF).
+ */
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { MITIGATION_CHECKLIST_DATA } from '../../data/mitigationData';

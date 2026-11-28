@@ -1,3 +1,10 @@
+/**
+ * FILE: src/main.tsx
+ * FUNGSI: Titik awal (entry point) eksekusi kode React TypeScript.
+ * ISI:
+ * - Membungkus aplikasi utama (<App />) dengan penyedia state global <AppProvider> dan <DioramaProvider>.
+ * - Merender keseluruhan antarmuka React ke dalam elemen <div id="root"> pada index.html.
+ */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';

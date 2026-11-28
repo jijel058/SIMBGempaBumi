@@ -1,3 +1,7 @@
+/**
+ * FILE: src/components/layout/InteractiveAtmosphereBackground.tsx
+ * FUNGSI: Komponen kanvas HTML5 2D untuk efek partikel atmosfer dan riak gelombang seismik latar belakang.
+ */
 import React, { useEffect, useRef } from 'react';
 
 interface Particle {

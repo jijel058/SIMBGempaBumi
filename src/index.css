@@ -1,3 +1,12 @@
+/**
+ * FILE: src/index.css
+ * FUNGSI: Stylesheet CSS global aplikasi EPICORA.
+ * ISI:
+ * - Memuat font Plus Jakarta Sans dan direktif utama Tailwind CSS (base, components, utilities).
+ * - Mendefinisikan kelas efek kaca transparan (.glass-panel, .glass-btn-primary, .glass-btn-secondary).
+ * - Mendefinisikan warna kartu indikator status skala magnitudo (.pill-status-baik s/d .pill-status-katastropik).
+ * - Mengatur tampilan kustom scrollbar dan pop-up peta Leaflet.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 @import '../node_modules/tailwindcss/base.css';
 @import '../node_modules/tailwindcss/components.css';

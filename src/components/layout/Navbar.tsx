@@ -1,3 +1,12 @@
+/**
+ * FILE: src/components/layout/Navbar.tsx
+ * FUNGSI: Bar navigasi utama bergaya Liquid-Glass yang menempel di bagian atas layar (sticky header).
+ * ISI:
+ * - Logo & nama brand EPICORA dengan indikator status live.
+ * - 8 menu navigasi utama beserta pita sub-menu dinamis yang muncul saat kursor diarahkan (hover).
+ * - Tombol utilitas di sisi kanan: Pencarian Global (Ctrl+K), Mute/Unmute Audio, Bahasa (ID/EN),
+ *   tombol akses Portal Admin, tombol darurat SOS, dan menu drawer untuk tampilan layar HP/tablet.
+ */
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useApp, NavigationTab } from '../../context/AppContext';
 import { useDiorama, NavIntent } from '../../context/DioramaContext';
@@ -17,7 +26,8 @@ import {
   Menu,
   X,
   ArrowUpRight,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck
 } from 'lucide-react';
 import { audio } from '../../services/audioService';
 
@@ -194,14 +204,14 @@ export const Navbar: React.FC = () => {
           <button
             onClick={() => goTo('home')}
             className="flex items-center gap-2.5 select-none group shrink-0"
-            aria-label="SEISMORA home"
+            aria-label="EPICORA home"
           >
             <span className="relative flex items-center justify-center w-10 h-10 rounded-2xl glass-btn-primary">
               <Activity className="w-5 h-5 text-white stroke-[2.6]" />
             </span>
             <span className="text-left leading-tight">
               <span className="flex items-center gap-1.5 font-black text-lg tracking-[0.12em] text-slate-900">
-                SEISMO<span className="text-emerald-600">RA</span>
+                EPIC<span className="text-emerald-600">ORA</span>
                 {isLive && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
               </span>
               <span className="hidden sm:block text-[10px] font-semibold text-slate-500 tracking-tight">
@@ -288,6 +298,19 @@ export const Navbar: React.FC = () => {
               className="hidden sm:flex w-10 h-10 rounded-full glass-btn-secondary items-center justify-center text-[11px] font-black text-slate-700"
             >
               {language === 'id' ? 'EN' : 'ID'}
+            </button>
+
+            <button
+              onClick={() => goTo('admin')}
+              title={tr('Login / Dashboard Admin', 'Admin Login / Dashboard')}
+              className={`flex items-center gap-1.5 h-10 px-3.5 rounded-full text-xs font-black transition ${
+                activeTab === 'admin'
+                  ? 'glass-btn-primary text-white'
+                  : 'glass-btn-secondary text-slate-700 hover:text-emerald-700'
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="hidden md:inline">Admin</span>
             </button>
 
             <button

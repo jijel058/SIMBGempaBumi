@@ -1,3 +1,12 @@
+/**
+ * FILE: src/services/audioService.ts
+ * FUNGSI: Synthesizer efek suara interaktif berbasis Web Audio API bawaan browser (tanpa file MP3 eksternal).
+ * ISI:
+ * - playClick(): Suara klik lembut saat tombol antarmuka ditekan.
+ * - playSuccessChime() & playWrongBuzzer(): Efek suara jawaban benar/berhasil dan peringatan salah/gagal.
+ * - playEmergencyAlert(): Suara sirine darurat saat tombol SOS ditekan.
+ * - playEarthquakeRumble(): Suara gemuruh frekuensi rendah (sub-bass) saat simulasi guncangan gempa dijalankan.
+ */
 // Audio synthesizer using Web Audio API (Zero external assets required, 100% reliable)
 class AudioService {
   private ctx: AudioContext | null = null;

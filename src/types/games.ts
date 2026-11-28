@@ -1,3 +1,8 @@
+/**
+ * FILE: src/types/games.ts
+ * FUNGSI: Definisi tipe data TypeScript untuk ke-5 permainan edukasi (Kuis Gempa, Misi Darurat,
+ *         Find the Safe Zone, Tantangan Tas Siaga, dan Puzzle Lempeng Tektonik).
+ */
 export interface QuizQuestion {
   id: string;
   question: string;

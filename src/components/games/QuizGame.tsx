@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/games/QuizGame.tsx
+ * FUNGSI: Komponen permainan kuis pilihan ganda "Earthquake Quiz".
+ * ISI:
+ * - Menyediakan 3 tingkat kesulitan (Mudah, Sedang, Sulit) seputar geologi, tektonik, seismologi, dan mitigasi.
+ * - Menampilkan pembahasan ilmiah setiap kali pengguna menjawab soal serta memberikan XP di akhir kuis.
+ */
 import React, { useState } from 'react';
 import { QUIZ_QUESTIONS } from '../../data/quizQuestions';
 import { QuizQuestion } from '../../types/games';

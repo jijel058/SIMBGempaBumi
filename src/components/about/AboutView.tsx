@@ -1,3 +1,10 @@
+/**
+ * FILE: src/components/about/AboutView.tsx
+ * FUNGSI: Menampilkan halaman menu "Tentang" pada platform EPICORA.
+ * ISI:
+ * - Penjelasan visi, misi, dan sumber data ilmiah platform EPICORA.
+ * - Daftar Pertanyaan yang Sering Diajukan (FAQ) model akordion interaktif seputar gempa bumi & tsunami.
+ */
 import React, { useState } from 'react';
 import { audio } from '../../services/audioService';
 import {
@@ -27,26 +34,26 @@ export const AboutView: React.FC = () => {
       a: 'Secara umum, tsunami dipicu oleh gempa bumi yang memenuhi kriteria: episentrum berada di dasar laut, kedalaman hiposentrum dangkal (< 60 km), magnitudo besar (M ≥ 7.0), dan memiliki mekanisme sesar vertikal (naik atau turun) yang mengangkat atau menurunkan kolom massa air laut.'
     },
     {
-      q: 'Dari mana SEISMORA memperoleh data gempa secara real-time?',
-      a: 'SEISMORA terhubung langsung secara terprogram dengan API resmi USGS Earthquake Hazards Program (Amerika Serikat) dan BMKG Open Data InaTEWS (Indonesia). Data disinkronkan otomatis tanpa manipulasi.'
+      q: 'Dari mana EPICORA memperoleh data gempa secara real-time?',
+      a: 'EPICORA terhubung langsung secara terprogram dengan API resmi USGS Earthquake Hazards Program (Amerika Serikat), BMKG Open Data InaTEWS (Indonesia), dan database MySQL terintegrasi. Data disinkronkan otomatis tanpa manipulasi.'
     }
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 animate-in fade-in duration-200">
-      {/* 1. ABOUT SEISMORA PLATFORM */}
+      {/* 1. ABOUT EPICORA PLATFORM */}
       <section className="space-y-4">
         <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
           <Info className="w-5 h-5 text-emerald-500" />
-          <span>Tentang Platform SEISMORA</span>
+          <span>Tentang Platform EPICORA</span>
         </h3>
 
         <div className="p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-earth-surface border border-slate-200 dark:border-emerald-950/60 space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
           <p>
-            <strong>SEISMORA</strong> adalah platform digital komprehensif berskala global yang memadukan pemantauan aktivitas gempa bumi secara real-time, visualisasi bumi 3D interaktif, modul edukasi kebumian, serta gamifikasi mitigasi bencana.
+            <strong>EPICORA</strong> adalah platform digital komprehensif berskala global yang memadukan pemantauan aktivitas gempa bumi secara real-time, visualisasi bumi 3D interaktif, modul edukasi kebumian, serta gamifikasi mitigasi bencana.
           </p>
           <p>
-            Terinspirasi dari keandalan dan otoritas sistem pemantauan BMKG (Badan Meteorologi, Klimatologi, dan Geofisika), SEISMORA menghadirkan antarmuka modern yang bersih, ramah pengguna, dan berestetika hijau emerald serta sage yang nyaman dipandang.
+            Terinspirasi dari keandalan dan otoritas sistem pemantauan BMKG (Badan Meteorologi, Klimatologi, dan Geofisika), EPICORA menghadirkan antarmuka modern yang bersih, ramah pengguna, dan berestetika hijau emerald serta sage yang nyaman dipandang.
           </p>
           <p>
             Platform ini dirancang untuk pelajar, mahasiswa, peneliti, dan masyarakat umum agar tidak sekadar melihat angka magnitudo, melainkan benar-benar memahami risiko geologis di sekitarnya dan tahu langkah penyelamatan diri yang tepat.

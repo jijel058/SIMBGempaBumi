@@ -1,3 +1,8 @@
+/**
+ * FILE: src/data/safePlaceData.ts
+ * FUNGSI: Menyimpan daftar ruangan (Ruang Tamu & Ruang Kelas) beserta titik koordinat interaktif (hotspots)
+ *         zona aman dan zona berbahaya untuk permainan Find the Safe Zone.
+ */
 import { SafePlaceRoom } from '../types/games';
 
 export const SAFE_PLACE_ROOMS: SafePlaceRoom[] = [

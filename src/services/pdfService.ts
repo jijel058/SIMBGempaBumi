@@ -1,3 +1,8 @@
+/**
+ * FILE: src/services/pdfService.ts
+ * FUNGSI: Menghasilkan dan mengunduh dokumen PDF "Buku Panduan Kesiapsiagaan & Mitigasi Gempa Bumi EPICORA"
+ *         secara otomatis menggunakan library jsPDF.
+ */
 import { jsPDF } from 'jspdf';
 
 export function generateMitigationGuidePDF(): void {
@@ -17,13 +22,13 @@ export function generateMitigationGuidePDF(): void {
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(22);
-  doc.text('SEISMORA', 14, 18);
+  doc.text('EPICORA', 14, 18);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(11);
   doc.text('Buku Panduan Kesiapsiagaan & Mitigasi Gempa Bumi', 14, 26);
   doc.setFontSize(9);
-  doc.text('Sesuai Standar BNPB & BMKG | www.seismora.org', 14, 33);
+  doc.text('Sesuai Standar BNPB & BMKG | www.epicora.org', 14, 33);
 
   // Section 1: SEBELUM GEMPA (Preparedness)
   let y = 52;
@@ -119,8 +124,8 @@ export function generateMitigationGuidePDF(): void {
   // Footer
   doc.setFontSize(8);
   doc.setTextColor(148, 163, 184);
-  doc.text('Dokumen ini digenerate secara otomatis oleh Platform SEISMORA — Know the Earth, Understand the Risk.', 14, 285);
+  doc.text('Dokumen ini digenerate secara otomatis oleh Platform EPICORA — Know the Earth, Understand the Risk.', 14, 285);
 
-  doc.save('SEISMORA_Panduan_Mitigasi_Gempa_Bumi.pdf');
+  doc.save('EPICORA_Panduan_Mitigasi_Gempa_Bumi.pdf');
 }
 

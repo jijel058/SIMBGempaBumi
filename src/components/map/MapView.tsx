@@ -1,3 +1,11 @@
+/**
+ * FILE: src/components/map/MapView.tsx
+ * FUNGSI: Halaman utama menu "Peta Dunia" yang menggabungkan Peta Satelit 2D dan Bola Bumi 3D.
+ * ISI:
+ * - Tombol pengalih dua mode: "2D REALISTIC MAP" (<EarthquakeMap />) dan "3D REALISTIC GLOBE" (<EarthGlobe3D />).
+ * - 5 kartu indikator kategori magnitudo di bagian atas peta (Ringan, Sedang, Siaga, Sangat Tidak Sehat, Berbahaya).
+ * - Tombol panggilan cepat Hotline Darurat dan kartu ringkasan episentrum terpilih.
+ */
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useDiorama } from '../../context/DioramaContext';

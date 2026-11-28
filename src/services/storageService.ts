@@ -1,6 +1,11 @@
+/**
+ * FILE: src/services/storageService.ts
+ * FUNGSI: Mengelola penyimpanan lokal (localStorage) untuk profil pengguna, XP, level, skor game,
+ *         lencana prestasi (badges), dan status checklist mitigasi.
+ */
 import { UserProfile, Badge } from '../types/user';
 
-const USER_KEY = 'seismora_user_profile_v1';
+const USER_KEY = 'epicora_user_profile_v1';
 
 export const INITIAL_BADGES: Badge[] = [
   {
@@ -49,9 +54,9 @@ export const INITIAL_BADGES: Badge[] = [
 
 export const DEFAULT_USER: UserProfile = {
   id: 'guest-user-1',
-  name: 'Warga Siaga Seismora',
-  email: 'user@seismora.org',
-  avatarSeed: 'seismora-hero',
+  name: 'Warga Siaga Epicora',
+  email: 'user@epicora.org',
+  avatarSeed: 'epicora-hero',
   level: 1,
   xp: 150,
   badges: ['first_quiz'],
@@ -100,12 +105,12 @@ export function saveUserProfile(profile: UserProfile): void {
 export function addXpAndCheckLevel(amount: number): { profile: UserProfile; leveledUp: boolean } {
   const profile = loadUserProfile();
   profile.xp += amount;
-  
+
   // 100 XP per level formula
   const currentLevel = Math.floor(profile.xp / 150) + 1;
   const leveledUp = currentLevel > profile.level;
   profile.level = currentLevel;
-  
+
   saveUserProfile(profile);
   return { profile, leveledUp };
 }

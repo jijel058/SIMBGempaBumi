@@ -1,3 +1,13 @@
+/**
+ * FILE: src/context/AppContext.tsx
+ * FUNGSI: Pusat manajemen state global (React Context) untuk seluruh halaman EPICORA.
+ * ISI:
+ * - Menyimpan daftar data gempa bumi gabungan (MySQL XAMPP, BMKG, USGS) beserta statistiknya.
+ * - Mengatur halaman/tab yang sedang aktif (activeTab), bahasa (ID/EN), dan status suara (mute/unmute).
+ * - Menjalankan auto-refresh data gempa setiap 2,5 menit sesuai filter rentang waktu (24h, 7d, 30d).
+ * - Mengelola pendeteksian lokasi GPS pengguna untuk menghitung jarak ke episentrum gempa.
+ * - Menyediakan jembatan sinkronisasi kamera dua arah antara Peta 2D dan Globe 3D.
+ */
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Earthquake, EarthquakeStats, UserLocation } from '../types/earthquake';
 import { UserProfile } from '../types/user';
@@ -13,7 +23,8 @@ export type NavigationTab =
   | 'mitigation' 
   | 'simulation' 
   | 'games' 
-  | 'about';
+  | 'about'
+  | 'admin';
 
 interface AppContextType {
   language: 'id' | 'en';
@@ -87,6 +98,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       root.classList.remove('dark');
     }
   }, [theme]);
+
+  // Support direct URL hash routing for #admin, #admin-login, #admin-dashboard
+  useEffect(() => {
+    const checkHashRoute = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#admin' || hash === '#admin-login' || hash === '#admin-dashboard') {
+        setActiveTab('admin');
+      }
+    };
+    checkHashRoute();
+    window.addEventListener('hashchange', checkHashRoute);
+    return () => window.removeEventListener('hashchange', checkHashRoute);
+  }, []);
 
   // Handle sound mute
   const toggleSound = () => {

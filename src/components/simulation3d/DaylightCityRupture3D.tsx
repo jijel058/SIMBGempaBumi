@@ -1,3 +1,13 @@
+/**
+ * FILE: src/components/simulation3d/DaylightCityRupture3D.tsx
+ * FUNGSI: Simulasi 3D WebGL (Three.js) patahan jalan raya perkotaan, guncangan gedung, dan rute evakuasi di siang hari.
+ * ISI:
+ * - Membangun jalan raya yang terbelah oleh rekahan sesar, pipa air bawah tanah bocor, seluruh gedung bertingkat
+ *   dengan tekstur jendela seragam yang berguncang semua mengikuti skala Richter, mobil damkar & ambulans berlampu sirine,
+ *   serta jalur hijau putus-putus menuju taman zona evakuasi aman.
+ * - Menyediakan 3 tombol sudut pandang kamera (1. Patahan Kota, 2. Rekahan & Damkar, 3. Rute Evakuasi)
+ *   serta slider pengatur Skala Guncangan (M 3.0 - 8.8 SR) dan tombol "Simulasikan Gempa".
+ */
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { audio } from '../../services/audioService';

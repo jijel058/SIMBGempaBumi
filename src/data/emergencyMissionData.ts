@@ -1,3 +1,8 @@
+/**
+ * FILE: src/data/emergencyMissionData.ts
+ * FUNGSI: Menyimpan tahapan skenario cerita bercabang dan pilihan tindakan penyelamatan diri
+ *         untuk permainan Earthquake Survival Mission.
+ */
 import { MissionStep } from '../types/games';
 
 export const EMERGENCY_MISSION_STEPS: MissionStep[] = [
